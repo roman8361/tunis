@@ -45,6 +45,8 @@ export default function TournamentPage() {
   const [editTeamA, setEditTeamA] = useState<number[]>([]);
   const [editTeamB, setEditTeamB] = useState<number[]>([]);
 
+  const [savedRound, setSavedRound] = useState<number | null>(null);
+
   const updateMutation = useUpdateRound({
     mutation: {
       onSuccess: (data) => {
@@ -52,6 +54,15 @@ export default function TournamentPage() {
         setScoreError("");
         if (data.status === "finished") {
           navigate(`/tournaments/${id}/results`);
+          return;
+        }
+        // Flash the saved round then advance to next incomplete
+        setSavedRound(selectedRound);
+        setTimeout(() => setSavedRound(null), 1200);
+        const updatedRounds = (data.rounds ?? []) as Round[];
+        const nextIncomplete = updatedRounds.find((r) => !r.completed);
+        if (nextIncomplete) {
+          setTimeout(() => setSelectedRound(nextIncomplete.round), 600);
         }
       },
       onError: (err: any) => {
@@ -134,12 +145,6 @@ export default function TournamentPage() {
   const completedRounds = rounds.filter((r) => r.completed).length;
   const progress = (completedRounds / 15) * 100;
 
-  // Sort players by wins desc, then pointsDiff desc
-  const sortedPlayers = [...players].sort((a, b) => {
-    if (b.wins !== a.wins) return b.wins - a.wins;
-    return b.pointsDiff - a.pointsDiff;
-  });
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -204,8 +209,10 @@ export default function TournamentPage() {
               <button
                 key={r.round}
                 onClick={() => setSelectedRound(r.round)}
-                className={`py-2 rounded-xl text-sm font-medium transition-all ${
-                  selectedRound === r.round
+                className={`py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  savedRound === r.round
+                    ? "bg-green-500 text-white scale-110 shadow-md"
+                    : selectedRound === r.round
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : r.completed
                     ? "bg-green-100 text-green-700 hover:bg-green-200"
@@ -377,40 +384,6 @@ export default function TournamentPage() {
                 </div>
               </div>
 
-              {/* Stats table */}
-              <div className="bg-card border border-card-border rounded-2xl overflow-hidden">
-                <div className="px-6 py-4 border-b border-border">
-                  <h3 className="font-semibold text-foreground">Текущая статистика</h3>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-muted/50">
-                        <th className="text-left px-6 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Место</th>
-                        <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Игрок</th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Сыграно</th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Побед</th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Пораж.</th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Очки</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {sortedPlayers.map((player, i) => (
-                        <tr key={player.id} className="hover:bg-muted/30 transition-colors">
-                          <td className="px-6 py-3 font-bold text-foreground">{i + 1}</td>
-                          <td className="px-4 py-3 font-medium text-foreground">{player.name}</td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">{player.gamesPlayed}</td>
-                          <td className="px-4 py-3 text-center font-semibold text-green-600">{player.wins}</td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">{player.losses}</td>
-                          <td className={`px-4 py-3 text-center font-bold ${player.pointsDiff > 0 ? "text-green-600" : player.pointsDiff < 0 ? "text-red-500" : "text-muted-foreground"}`}>
-                            {player.pointsDiff > 0 ? `+${player.pointsDiff}` : player.pointsDiff}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
             </>
           )}
         </div>

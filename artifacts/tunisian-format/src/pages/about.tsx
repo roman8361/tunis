@@ -8,7 +8,7 @@ export default function AboutPage() {
       <header className="bg-card border-b border-card-border sticky top-0 z-10 shadow-sm">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
           <button
-            onClick={() => navigate(-1 as any)}
+            onClick={() => navigate("/dashboard")}
             className="p-2 hover:bg-muted rounded-lg transition-all text-muted-foreground hover:text-foreground"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

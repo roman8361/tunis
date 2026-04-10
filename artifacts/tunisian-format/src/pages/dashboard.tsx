@@ -55,44 +55,46 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card border-b border-card-border sticky top-0 z-10 shadow-sm">
+      <header className="sticky top-0 z-10 shadow-sm border-b border-sky-100"
+        style={{ background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)" }}
+      >
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shadow-sm animate-float">
               <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
                 <circle cx="16" cy="16" r="12" stroke="white" strokeWidth="2.5"/>
                 <path d="M8 16 Q12 10 16 16 Q20 22 24 16" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
             <div>
-              <h1 className="font-bold text-foreground leading-none">Тунисский формат</h1>
-              <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
+              <h1 className="font-bold text-white leading-none">Тунисский формат</h1>
+              <p className="text-xs text-white/70 mt-0.5">{user?.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {user?.role === "superadmin" && (
               <button
                 onClick={() => navigate("/admin")}
-                className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"
+                className="px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all"
               >
                 Администрирование
               </button>
             )}
             <button
               onClick={() => navigate("/about")}
-              className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"
+              className="px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all"
             >
               О сервисе
             </button>
             <button
               onClick={() => navigate("/team")}
-              className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all"
+              className="px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all"
             >
               О команде
             </button>
             <button
               onClick={() => logoutMutation.mutate({})}
-              className="px-3 py-1.5 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-all"
+              className="px-3 py-1.5 text-sm text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all"
             >
               Выйти
             </button>
@@ -100,12 +102,27 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+      {/* Wave under header */}
+      <div className="overflow-hidden" style={{ marginTop: "-1px", height: "40px" }}>
+        <svg viewBox="0 0 1440 40" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
+          <path d="M0,20 C360,40 720,0 1080,20 C1260,30 1380,10 1440,20 L1440,0 L0,0 Z"
+            fill="url(#headerGrad)"/>
+          <defs>
+            <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#0ea5e9"/>
+              <stop offset="100%" stopColor="#0284c7"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <main className="max-w-4xl mx-auto px-4 py-6">
+        <div className="flex items-center justify-between mb-6 animate-slide-up">
           <h2 className="text-2xl font-bold text-foreground">Мои турниры</h2>
           <button
             onClick={() => navigate("/tournaments/new")}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2"
+            className="text-white font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2 hover:opacity-90 active:scale-95"
+            style={{ background: "linear-gradient(135deg, #0ea5e9, #f97316)" }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M12 5v14M5 12h14" strokeLinecap="round"/>
@@ -134,12 +151,12 @@ export default function DashboardPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-children">
             {tournaments.map((t) => (
               <div
                 key={t.id}
                 onClick={() => navigate(t.status === "finished" ? `/tournaments/${t.id}/results` : `/tournaments/${t.id}`)}
-                className="bg-card border border-card-border rounded-2xl p-5 hover:shadow-md transition-all cursor-pointer group"
+                className="bg-card border border-card-border rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -158,7 +175,8 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={(e) => handleDelete(t.id, e)}
-                      className="opacity-0 group-hover:opacity-100 p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all"
+                      className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all"
+                      title="Удалить турнир"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
