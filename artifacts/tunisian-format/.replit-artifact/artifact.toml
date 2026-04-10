@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Тунисский формат"
+version = "1.0.0"
+id = "artifacts/tunisian-format"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19580
+
+[services.development]
+run = "pnpm --filter @workspace/tunisian-format run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/tunisian-format", "run", "build" ]
+publicDir = "artifacts/tunisian-format/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19580"
+BASE_PATH = "/"
