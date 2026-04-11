@@ -167,34 +167,34 @@ export default function TournamentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #c8eef8 0%, #e8f8fd 40%, #fff8e8 100%)" }}>
       {/* Header */}
-      <header className="bg-card border-b border-card-border sticky top-0 z-10 shadow-sm">
+      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-sky-100">
         <div className="max-w-6xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate("/dashboard")}
-                className="p-1.5 hover:bg-muted rounded-lg transition-all text-muted-foreground hover:text-foreground"
+                className="p-1.5 hover:bg-sky-50 rounded-lg transition-all text-slate-400 hover:text-slate-600"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
               <div>
-                <div className="font-semibold text-foreground text-sm">
+                <div className="font-semibold text-slate-700 text-sm">
                   {players.map((p) => p.name).join(" · ")}
                 </div>
-                <div className="text-xs text-muted-foreground">до {tournament.targetScore} очков</div>
+                <div className="text-xs text-slate-400">до {tournament.targetScore} очков</div>
               </div>
             </div>
-            <div className="text-sm text-muted-foreground">{completedRounds}/15 туров</div>
+            <div className="text-sm font-medium text-slate-500">{completedRounds}/15 туров</div>
           </div>
           {/* Progress bar */}
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+          <div className="h-2 bg-sky-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${progress}%`, background: "linear-gradient(90deg, #4BBCD4, #f97316)" }}
             />
           </div>
         </div>
@@ -362,23 +362,13 @@ export default function TournamentPage() {
                         </div>
                       )}
 
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleSaveScore}
-                          disabled={updateMutation.isPending}
-                          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 rounded-xl transition-all disabled:opacity-60"
-                        >
-                          {updateMutation.isPending ? "Сохранение..." : "Сохранить результат тура"}
-                        </button>
-                        {!editingTeams && (
-                          <button
-                            onClick={startEditingTeams}
-                            className="px-4 py-2.5 rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all text-sm"
-                          >
-                            Изменить пары
-                          </button>
-                        )}
-                      </div>
+                      <button
+                        onClick={handleSaveScore}
+                        disabled={updateMutation.isPending}
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 rounded-xl transition-all disabled:opacity-60"
+                      >
+                        {updateMutation.isPending ? "Сохранение..." : "Сохранить результат тура"}
+                      </button>
                     </div>
                   )}
                 </div>
