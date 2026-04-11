@@ -95,15 +95,13 @@ export default function AuthPage() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md relative z-10 animate-slide-up">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-18 h-18 mb-4">
-              <div className="w-16 h-16 bg-white/90 backdrop-blur rounded-2xl shadow-lg flex items-center justify-center animate-float">
-                <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
-                  <circle cx="24" cy="24" r="22" fill="#0ea5e9"/>
-                  <path d="M5 24 Q12 10 24 14 Q36 18 43 24" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-                  <path d="M5 24 Q12 38 24 34 Q36 30 43 24" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-                  <path d="M24 2 Q30 12 24 24 Q18 36 24 46" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-                </svg>
-              </div>
+            <div className="inline-flex items-center justify-center mb-4">
+              <img
+                src="/volleyball.png"
+                alt="Волейбольный мяч"
+                className="w-16 h-16 animate-float"
+                style={{ objectFit: "contain", filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.15))" }}
+              />
             </div>
             <h1 className="text-3xl font-bold text-white drop-shadow-md tracking-tight">Тунисский формат</h1>
             <p className="text-white/80 mt-1 drop-shadow-sm">Турниры по пляжному волейболу</p>
