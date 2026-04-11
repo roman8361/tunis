@@ -96,24 +96,17 @@ export default function AuthPage() {
         <div className="w-full max-w-md relative z-10 animate-slide-up">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-4">
-              <svg
-                width="64"
-                height="64"
-                viewBox="0 0 100 100"
-                fill="none"
+              <img
+                src="/player.png"
+                alt="Игрок"
                 className="animate-float"
-                style={{ filter: "drop-shadow(0 4px 14px rgba(0,0,0,0.18))" }}
-              >
-                <circle cx="50" cy="50" r="47" fill="white" fillOpacity="0.15" stroke="white" strokeWidth="4.5"/>
-                {/* Верхняя горизонтальная дуга */}
-                <path d="M7,38 C22,22 38,18 50,18 C62,18 78,22 93,38" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-                {/* Нижняя горизонтальная дуга */}
-                <path d="M7,62 C22,78 38,82 50,82 C62,82 78,78 93,62" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-                {/* Левая вертикальная дуга */}
-                <path d="M26,5 C14,20 12,36 12,50 C12,64 14,80 26,95" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-                {/* Правая вертикальная дуга */}
-                <path d="M74,5 C86,20 88,36 88,50 C88,64 86,80 74,95" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-              </svg>
+                style={{
+                  width: 64,
+                  height: 64,
+                  objectFit: "contain",
+                  filter: "brightness(0) invert(1) drop-shadow(0 4px 14px rgba(0,0,0,0.18))",
+                }}
+              />
             </div>
             <h1 className="text-3xl font-bold text-white drop-shadow-md tracking-tight">Тунисский формат</h1>
             <p className="text-white/80 mt-1 drop-shadow-sm">Турниры по пляжному волейболу</p>
