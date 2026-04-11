@@ -1,7 +1,6 @@
 import { useLocation } from "wouter";
 import { useListTournaments, useDeleteTournament, useGetMe, useLogout, getListTournamentsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { getGetMeQueryKey } from "@workspace/api-client-react";
 
 const STATUS_LABELS: Record<string, string> = {
   in_progress: "В процессе",
@@ -50,8 +49,7 @@ export default function DashboardPage() {
     mutation: {
       onSuccess: () => {
         localStorage.removeItem("auth_token");
-        queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
-        navigate("/");
+        window.location.replace(import.meta.env.BASE_URL || "/");
       },
     },
   });

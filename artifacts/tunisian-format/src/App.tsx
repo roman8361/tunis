@@ -30,8 +30,8 @@ function ProtectedRoute({ component: Component, adminOnly = false }: { component
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-muted-foreground">Загрузка...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(180deg, #c8eef8, #fff8e8)" }}>
+        <div className="text-slate-400">Загрузка...</div>
       </div>
     );
   }
@@ -52,8 +52,8 @@ function PublicOnlyRoute({ component: Component }: { component: React.ComponentT
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-muted-foreground">Загрузка...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(180deg, #c8eef8, #fff8e8)" }}>
+        <div className="text-slate-400">Загрузка...</div>
       </div>
     );
   }
@@ -65,15 +65,23 @@ function PublicOnlyRoute({ component: Component }: { component: React.ComponentT
   return <Component />;
 }
 
+// Stable component references — defined once outside Router to prevent remounting on every render
+function RouteHome() { return <PublicOnlyRoute component={AuthPage} />; }
+function RouteDashboard() { return <ProtectedRoute component={DashboardPage} />; }
+function RouteNewTournament() { return <ProtectedRoute component={NewTournamentPage} />; }
+function RouteTournamentResults() { return <ProtectedRoute component={TournamentResultsPage} />; }
+function RouteTournament() { return <ProtectedRoute component={TournamentPage} />; }
+function RouteAdmin() { return <ProtectedRoute component={AdminPage} adminOnly={true} />; }
+
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={() => <PublicOnlyRoute component={AuthPage} />} />
-      <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
-      <Route path="/tournaments/new" component={() => <ProtectedRoute component={NewTournamentPage} />} />
-      <Route path="/tournaments/:id/results" component={() => <ProtectedRoute component={TournamentResultsPage} />} />
-      <Route path="/tournaments/:id" component={() => <ProtectedRoute component={TournamentPage} />} />
-      <Route path="/admin" component={() => <ProtectedRoute component={AdminPage} adminOnly={true} />} />
+      <Route path="/" component={RouteHome} />
+      <Route path="/dashboard" component={RouteDashboard} />
+      <Route path="/tournaments/new" component={RouteNewTournament} />
+      <Route path="/tournaments/:id/results" component={RouteTournamentResults} />
+      <Route path="/tournaments/:id" component={RouteTournament} />
+      <Route path="/admin" component={RouteAdmin} />
       <Route path="/about" component={AboutPage} />
       <Route path="/team" component={TeamPage} />
       <Route component={NotFound} />
