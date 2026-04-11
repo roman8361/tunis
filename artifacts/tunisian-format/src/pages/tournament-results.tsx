@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { useGetTournament } from "@workspace/api-client-react";
+import BeachBackground from "@/components/beach-background";
 
 interface Player {
   id: number;
@@ -38,20 +39,20 @@ export default function TournamentResultsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(180deg, #c8eef8, #fff8e8)" }}>
-        <div className="text-slate-400">Загрузка...</div>
-      </div>
+      <BeachBackground className="flex items-center justify-center">
+        <div className="text-white">Загрузка...</div>
+      </BeachBackground>
     );
   }
 
   if (!tournament) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(180deg, #c8eef8, #fff8e8)" }}>
+      <BeachBackground className="flex items-center justify-center">
         <div className="text-center">
-          <p className="text-slate-400 mb-4">Турнир не найден</p>
-          <button onClick={() => navigate("/dashboard")} className="text-sky-500 hover:underline">Вернуться</button>
+          <p className="text-white mb-4">Турнир не найден</p>
+          <button onClick={() => navigate("/dashboard")} className="text-white underline">Вернуться</button>
         </div>
-      </div>
+      </BeachBackground>
     );
   }
 
@@ -82,9 +83,9 @@ export default function TournamentResultsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #c8eef8 0%, #e8f8fd 40%, #fff8e8 100%)" }}>
+    <BeachBackground>
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-sky-100">
+      <header className="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-10 border-b border-sky-100">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
@@ -120,7 +121,7 @@ export default function TournamentResultsPage() {
         )}
 
         {/* Results table */}
-        <div className="bg-white/80 backdrop-blur border border-sky-100 rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-white/90 backdrop-blur border border-white/60 rounded-2xl overflow-hidden shadow-sm">
           <div className="px-6 py-4 border-b border-sky-50">
             <h2 className="font-bold text-slate-700">Итоговая таблица</h2>
           </div>
@@ -157,7 +158,7 @@ export default function TournamentResultsPage() {
         </div>
 
         {/* Rounds summary */}
-        <div className="bg-white/80 backdrop-blur border border-sky-100 rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-white/90 backdrop-blur border border-white/60 rounded-2xl overflow-hidden shadow-sm">
           <div className="px-6 py-4 border-b border-sky-50">
             <h2 className="font-bold text-slate-700">Сводка туров</h2>
           </div>
@@ -197,6 +198,6 @@ export default function TournamentResultsPage() {
           </button>
         </div>
       </main>
-    </div>
+    </BeachBackground>
   );
 }

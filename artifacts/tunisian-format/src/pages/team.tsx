@@ -1,11 +1,12 @@
 import { useLocation } from "wouter";
+import BeachBackground from "@/components/beach-background";
 
 export default function TeamPage() {
   const [, navigate] = useLocation();
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #c8eef8 0%, #e8f8fd 40%, #fff8e8 100%)" }}>
-      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-sky-100">
+    <BeachBackground>
+      <header className="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-10 border-b border-sky-100">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
@@ -19,7 +20,7 @@ export default function TeamPage() {
         </div>
       </header>
       <main className="max-w-2xl mx-auto px-4 py-10">
-        <div className="bg-white/80 backdrop-blur border border-sky-100 rounded-2xl p-8 shadow-sm">
+        <div className="bg-white/90 backdrop-blur border border-white/60 rounded-2xl p-8 shadow-sm">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style={{ background: "linear-gradient(135deg, #f97316, #fb923c)" }}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -44,6 +45,6 @@ export default function TeamPage() {
           </div>
         </div>
       </main>
-    </div>
+    </BeachBackground>
   );
 }

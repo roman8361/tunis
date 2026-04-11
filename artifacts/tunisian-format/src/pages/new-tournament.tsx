@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useCreateTournament, getListTournamentsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import BeachBackground from "@/components/beach-background";
 
 const TARGET_SCORES = [11, 15, 21];
 
@@ -79,9 +80,9 @@ export default function NewTournamentPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #c8eef8 0%, #e8f8fd 40%, #fff8e8 100%)" }}>
+    <BeachBackground>
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-sky-100">
+      <header className="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-10 border-b border-sky-100">
         <div className="max-w-xl mx-auto px-4 py-4 flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
@@ -101,7 +102,7 @@ export default function NewTournamentPage() {
       <main className="max-w-xl mx-auto px-4 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Target score */}
-          <div className="bg-white/80 backdrop-blur border border-sky-100 rounded-2xl p-6 shadow-sm">
+          <div className="bg-white/90 backdrop-blur border border-white/60 rounded-2xl p-6 shadow-sm">
             <h2 className="font-semibold text-slate-700 mb-4">Лимит очков</h2>
             <div className="flex gap-3">
               {TARGET_SCORES.map((score) => (
@@ -123,7 +124,7 @@ export default function NewTournamentPage() {
           </div>
 
           {/* Players */}
-          <div className="bg-white/80 backdrop-blur border border-sky-100 rounded-2xl p-6 shadow-sm">
+          <div className="bg-white/90 backdrop-blur border border-white/60 rounded-2xl p-6 shadow-sm">
             <h2 className="font-semibold text-slate-700 mb-4">Игроки</h2>
             <div className="space-y-3">
               {playerNames.map((name, i) => (
@@ -166,6 +167,6 @@ export default function NewTournamentPage() {
           </button>
         </form>
       </main>
-    </div>
+    </BeachBackground>
   );
 }

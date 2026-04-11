@@ -1,6 +1,7 @@
 import { useLocation } from "wouter";
 import { useListTournaments, useDeleteTournament, useGetMe, useLogout, getListTournamentsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import BeachBackground from "@/components/beach-background";
 
 const STATUS_LABELS: Record<string, string> = {
   in_progress: "В процессе",
@@ -13,10 +14,12 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("ru-RU", {
+  return new Date(dateStr).toLocaleString("ru-RU", {
     day: "numeric",
     month: "long",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
@@ -62,9 +65,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #c8eef8 0%, #e8f8fd 40%, #fff8e8 100%)" }}>
+    <BeachBackground>
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-sky-100">
+      <header className="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-10 border-b border-sky-100">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <VolleyballIcon size={32} className="shrink-0" />
@@ -100,7 +103,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate("/about")}
-              className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-sky-300 bg-white/70 text-slate-600 font-medium hover:bg-white hover:border-sky-400 transition-all"
+              className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-white/60 bg-white/50 text-white font-medium hover:bg-white/70 hover:text-slate-700 transition-all backdrop-blur-sm"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10"/>
@@ -110,7 +113,7 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={() => navigate("/team")}
-              className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-sky-300 bg-white/70 text-slate-600 font-medium hover:bg-white hover:border-sky-400 transition-all"
+              className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-white/60 bg-white/50 text-white font-medium hover:bg-white/70 hover:text-slate-700 transition-all backdrop-blur-sm"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -136,16 +139,16 @@ export default function DashboardPage() {
         {/* Tournaments */}
         <div className="flex items-center gap-2 mb-4">
           <span className="text-2xl">🏆</span>
-          <h2 className="text-xl font-bold text-slate-700">Мои турниры</h2>
+          <h2 className="text-xl font-bold text-white drop-shadow-sm">Мои турниры</h2>
         </div>
 
         {isLoading ? (
-          <div className="text-center py-16 text-slate-400">Загрузка...</div>
+          <div className="text-center py-16 text-white/70">Загрузка...</div>
         ) : !tournaments || tournaments.length === 0 ? (
-          <div className="bg-white/60 border-2 border-dashed border-sky-200 rounded-2xl py-12 text-center">
+          <div className="bg-white/60 border-2 border-dashed border-white/50 rounded-2xl py-12 text-center backdrop-blur-sm">
             <div className="text-5xl mb-3">🏆</div>
-            <p className="text-slate-500 font-medium mb-1">Пока нет турниров.</p>
-            <p className="text-slate-400 text-sm">Создайте первый, чтобы начать игру!</p>
+            <p className="text-white font-medium mb-1">Пока нет турниров.</p>
+            <p className="text-white/70 text-sm">Создайте первый, чтобы начать игру!</p>
           </div>
         ) : (
           <div className="space-y-3 stagger-children">
@@ -153,7 +156,7 @@ export default function DashboardPage() {
               <div
                 key={t.id}
                 onClick={() => navigate(t.status === "finished" ? `/tournaments/${t.id}/results` : `/tournaments/${t.id}`)}
-                className="bg-white/80 border border-sky-100 rounded-2xl p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group backdrop-blur-sm"
+                className="bg-white/85 border border-white/60 rounded-2xl p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group backdrop-blur-sm"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -189,6 +192,6 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
-    </div>
+    </BeachBackground>
   );
 }

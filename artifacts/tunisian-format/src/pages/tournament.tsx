@@ -6,6 +6,7 @@ import {
   getGetTournamentQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import BeachBackground from "@/components/beach-background";
 
 interface Player {
   id: number;
@@ -56,7 +57,6 @@ export default function TournamentPage() {
           navigate(`/tournaments/${id}/results`);
           return;
         }
-        // Flash the saved round then advance to next incomplete
         setSavedRound(selectedRound);
         setTimeout(() => setSavedRound(null), 1200);
         const updatedRounds = (data.rounds ?? []) as Round[];
@@ -74,7 +74,6 @@ export default function TournamentPage() {
   const rounds = (tournament?.rounds ?? []) as Round[];
   const players = (tournament?.players ?? []) as Player[];
 
-  // Find first incomplete round as default
   useEffect(() => {
     if (tournament && rounds.length > 0) {
       const firstIncomplete = rounds.find((r) => !r.completed);
@@ -84,7 +83,6 @@ export default function TournamentPage() {
 
   const currentRound = rounds.find((r) => r.round === selectedRound);
 
-  // Sync score inputs when round changes
   useEffect(() => {
     if (currentRound) {
       setScoreA(currentRound.scoreA?.toString() ?? "");
@@ -96,6 +94,36 @@ export default function TournamentPage() {
 
   function getPlayerName(id: number) {
     return players.find((p) => p.id === id)?.name ?? `Игрок ${id}`;
+  }
+
+  function handleScoreAChange(val: string) {
+    setScoreA(val);
+    setScoreError("");
+    const num = parseInt(val);
+    const target = tournament?.targetScore;
+    if (!isNaN(num) && target) {
+      if (num < target) {
+        // Минимально возможный счёт проигравшей команды → автоподстановка максимума
+        setScoreB(target.toString());
+      } else if (num === target) {
+        // Максимальный счёт → противоположное поле оставить пустым
+        setScoreB("");
+      }
+    }
+  }
+
+  function handleScoreBChange(val: string) {
+    setScoreB(val);
+    setScoreError("");
+    const num = parseInt(val);
+    const target = tournament?.targetScore;
+    if (!isNaN(num) && target) {
+      if (num < target) {
+        setScoreA(target.toString());
+      } else if (num === target) {
+        setScoreA("");
+      }
+    }
   }
 
   function handleSaveScore() {
@@ -122,7 +150,6 @@ export default function TournamentPage() {
 
   function togglePlayerInTeam(playerId: number, fromTeam: "A" | "B") {
     if (fromTeam === "A") {
-      // Swap with first player in team B
       const swapWith = editTeamB[0];
       setEditTeamA((prev) => prev.map((id) => (id === playerId ? swapWith : id)));
       setEditTeamB((prev) => prev.map((id) => (id === swapWith ? playerId : id)));
@@ -147,29 +174,29 @@ export default function TournamentPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-muted-foreground">Загрузка турнира...</div>
-      </div>
+      <BeachBackground className="flex items-center justify-center">
+        <div className="text-white">Загрузка турнира...</div>
+      </BeachBackground>
     );
   }
 
   if (error || !tournament) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <BeachBackground className="flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted-foreground mb-4">Турнир не найден</p>
-          <button onClick={() => navigate("/dashboard")} className="text-primary hover:underline">
+          <p className="text-white mb-4">Турнир не найден</p>
+          <button onClick={() => navigate("/dashboard")} className="text-white underline">
             Вернуться
           </button>
         </div>
-      </div>
+      </BeachBackground>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #c8eef8 0%, #e8f8fd 40%, #fff8e8 100%)" }}>
+    <BeachBackground className="flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-sky-100">
+      <header className="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-10 border-b border-sky-100">
         <div className="max-w-6xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
@@ -190,7 +217,6 @@ export default function TournamentPage() {
             </div>
             <div className="text-sm font-medium text-slate-500">{completedRounds}/15 туров</div>
           </div>
-          {/* Progress bar */}
           <div className="h-2 bg-sky-100 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
@@ -203,7 +229,7 @@ export default function TournamentPage() {
       <div className="flex-1 max-w-6xl mx-auto w-full px-4 py-6 flex flex-col lg:flex-row gap-6">
         {/* Round list sidebar */}
         <div className="lg:w-52 shrink-0">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Туры</h3>
+          <h3 className="text-xs font-semibold text-white/80 uppercase tracking-wider mb-2">Туры</h3>
           <div className="grid grid-cols-5 lg:grid-cols-3 gap-1.5">
             {rounds.map((r) => (
               <button
@@ -216,7 +242,7 @@ export default function TournamentPage() {
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : r.completed
                     ? "bg-green-100 text-green-700 hover:bg-green-200"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                    : "bg-white/70 text-slate-600 hover:bg-white/90 hover:text-foreground backdrop-blur-sm"
                 }`}
               >
                 {r.round}
@@ -230,7 +256,7 @@ export default function TournamentPage() {
           {currentRound && (
             <>
               {/* Round card */}
-              <div className="bg-card border border-card-border rounded-2xl overflow-hidden">
+              <div className="bg-white/90 backdrop-blur border border-white/60 rounded-2xl overflow-hidden shadow-sm">
                 {/* Round header */}
                 <div className="bg-muted/50 px-6 py-4 flex items-center justify-between border-b border-border">
                   <div>
@@ -337,16 +363,7 @@ export default function TournamentPage() {
                             type="number"
                             min="0"
                             value={scoreA}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setScoreA(val);
-                              setScoreError("");
-                              const num = parseInt(val);
-                              const target = tournament?.targetScore;
-                              if (!isNaN(num) && target && num < target) {
-                                setScoreB(target.toString());
-                              }
-                            }}
+                            onChange={(e) => handleScoreAChange(e.target.value)}
                             className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring"
                             placeholder="0"
                           />
@@ -358,16 +375,7 @@ export default function TournamentPage() {
                             type="number"
                             min="0"
                             value={scoreB}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setScoreB(val);
-                              setScoreError("");
-                              const num = parseInt(val);
-                              const target = tournament?.targetScore;
-                              if (!isNaN(num) && target && num < target) {
-                                setScoreA(target.toString());
-                              }
-                            }}
+                            onChange={(e) => handleScoreBChange(e.target.value)}
                             className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring"
                             placeholder="0"
                           />
@@ -392,10 +400,19 @@ export default function TournamentPage() {
                 </div>
               </div>
 
+              {/* Edit teams button */}
+              {!editingTeams && !currentRound.completed && (
+                <button
+                  onClick={startEditingTeams}
+                  className="w-full py-2.5 rounded-xl border-2 border-white/60 bg-white/50 backdrop-blur-sm text-white font-medium hover:bg-white/70 hover:text-slate-700 transition-all text-sm"
+                >
+                  Изменить пары вручную
+                </button>
+              )}
             </>
           )}
         </div>
       </div>
-    </div>
+    </BeachBackground>
   );
 }
