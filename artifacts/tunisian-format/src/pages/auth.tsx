@@ -96,12 +96,25 @@ export default function AuthPage() {
         <div className="w-full max-w-md relative z-10 animate-slide-up">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-4">
-              <img
-                src="/volleyball.png"
-                alt="Волейбольный мяч"
-                className="w-16 h-16 animate-float"
-                style={{ objectFit: "contain", filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.15))" }}
-              />
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 100 100"
+                fill="none"
+                className="animate-float"
+                style={{ filter: "drop-shadow(0 4px 14px rgba(0,0,0,0.18))" }}
+              >
+                <circle cx="50" cy="50" r="47" fill="white" fillOpacity="0.15" stroke="white" strokeWidth="4"/>
+                {/* Горизонтальная дуга */}
+                <path d="M8 50 Q25 20 50 28 Q75 36 92 50" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                <path d="M8 50 Q25 80 50 72 Q75 64 92 50" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                {/* Вертикальная дуга */}
+                <path d="M50 3 Q62 25 50 50 Q38 75 50 97" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                {/* Левая дуга */}
+                <path d="M50 3 Q18 18 10 50 Q18 82 50 97" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                {/* Правая дуга */}
+                <path d="M50 3 Q82 18 90 50 Q82 82 50 97" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+              </svg>
             </div>
             <h1 className="text-3xl font-bold text-white drop-shadow-md tracking-tight">Тунисский формат</h1>
             <p className="text-white/80 mt-1 drop-shadow-sm">Турниры по пляжному волейболу</p>
