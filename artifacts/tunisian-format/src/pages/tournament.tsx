@@ -337,7 +337,16 @@ export default function TournamentPage() {
                             type="number"
                             min="0"
                             value={scoreA}
-                            onChange={(e) => { setScoreA(e.target.value); setScoreError(""); }}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setScoreA(val);
+                              setScoreError("");
+                              const num = parseInt(val);
+                              const target = tournament?.targetScore;
+                              if (!isNaN(num) && target && num < target) {
+                                setScoreB(target.toString());
+                              }
+                            }}
                             className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring"
                             placeholder="0"
                           />
@@ -349,7 +358,16 @@ export default function TournamentPage() {
                             type="number"
                             min="0"
                             value={scoreB}
-                            onChange={(e) => { setScoreB(e.target.value); setScoreError(""); }}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setScoreB(val);
+                              setScoreError("");
+                              const num = parseInt(val);
+                              const target = tournament?.targetScore;
+                              if (!isNaN(num) && target && num < target) {
+                                setScoreA(target.toString());
+                              }
+                            }}
                             className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring"
                             placeholder="0"
                           />

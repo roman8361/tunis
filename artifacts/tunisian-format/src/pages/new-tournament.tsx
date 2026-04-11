@@ -5,6 +5,14 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const TARGET_SCORES = [11, 15, 21];
 
+const DEFAULT_NAMES = [
+  "Тарас Мыськив",
+  "Алексей Архипов",
+  "Дмитрий Веретюк",
+  "Мария Лазуренко",
+  "Надежда Макрогузова",
+];
+
 export default function NewTournamentPage() {
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
@@ -35,6 +43,10 @@ export default function NewTournamentPage() {
     setGlobalError("");
   }
 
+  function getEffectiveName(index: number): string {
+    return playerNames[index].trim() || DEFAULT_NAMES[index];
+  }
+
   function validate() {
     const newErrors = ["", "", "", "", ""];
     let valid = true;
@@ -44,16 +56,9 @@ export default function NewTournamentPage() {
       return false;
     }
 
-    const trimmed = playerNames.map((n) => n.trim());
-    for (let i = 0; i < 5; i++) {
-      if (!trimmed[i]) {
-        newErrors[i] = "Введите имя игрока";
-        valid = false;
-      }
-    }
-
-    const uniqueNames = new Set(trimmed.filter(Boolean).map((n) => n.toLowerCase()));
-    if (uniqueNames.size !== trimmed.filter(Boolean).length) {
+    const effective = playerNames.map((_, i) => getEffectiveName(i));
+    const uniqueNames = new Set(effective.map((n) => n.toLowerCase()));
+    if (uniqueNames.size !== effective.length) {
       setGlobalError("Имена игроков не должны повторяться");
       valid = false;
     }
@@ -68,27 +73,27 @@ export default function NewTournamentPage() {
     createMutation.mutate({
       data: {
         targetScore: targetScore!,
-        playerNames: playerNames.map((n) => n.trim()),
+        playerNames: playerNames.map((_, i) => getEffectiveName(i)),
       },
     });
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #c8eef8 0%, #e8f8fd 40%, #fff8e8 100%)" }}>
       {/* Header */}
-      <header className="bg-card border-b border-card-border sticky top-0 z-10 shadow-sm">
+      <header className="bg-white shadow-sm sticky top-0 z-10 border-b border-sky-100">
         <div className="max-w-xl mx-auto px-4 py-4 flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
-            className="p-2 hover:bg-muted rounded-lg transition-all text-muted-foreground hover:text-foreground"
+            className="p-2 hover:bg-sky-50 rounded-lg transition-all text-slate-400 hover:text-slate-600"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
           <div>
-            <h1 className="font-bold text-foreground">Новый турнир</h1>
-            <p className="text-xs text-muted-foreground">Тунисский формат — 5 игроков, 15 туров</p>
+            <h1 className="font-bold text-slate-700">Новый турнир</h1>
+            <p className="text-xs text-slate-400">Тунисский формат — 5 игроков, 15 туров</p>
           </div>
         </div>
       </header>
@@ -96,8 +101,8 @@ export default function NewTournamentPage() {
       <main className="max-w-xl mx-auto px-4 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Target score */}
-          <div className="bg-card border border-card-border rounded-2xl p-6">
-            <h2 className="font-semibold text-foreground mb-4">Лимит очков</h2>
+          <div className="bg-white/80 backdrop-blur border border-sky-100 rounded-2xl p-6 shadow-sm">
+            <h2 className="font-semibold text-slate-700 mb-4">Лимит очков</h2>
             <div className="flex gap-3">
               {TARGET_SCORES.map((score) => (
                 <button
@@ -106,9 +111,10 @@ export default function NewTournamentPage() {
                   onClick={() => setTargetScore(score)}
                   className={`flex-1 py-4 rounded-xl font-bold text-lg transition-all border-2 ${
                     targetScore === score
-                      ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                      : "bg-background text-foreground border-border hover:border-primary/50"
+                      ? "text-white border-transparent shadow-sm"
+                      : "bg-white text-slate-600 border-sky-200 hover:border-sky-400"
                   }`}
+                  style={targetScore === score ? { background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" } : {}}
                 >
                   {score}
                 </button>
@@ -117,34 +123,35 @@ export default function NewTournamentPage() {
           </div>
 
           {/* Players */}
-          <div className="bg-card border border-card-border rounded-2xl p-6">
-            <h2 className="font-semibold text-foreground mb-4">Игроки</h2>
+          <div className="bg-white/80 backdrop-blur border border-sky-100 rounded-2xl p-6 shadow-sm">
+            <h2 className="font-semibold text-slate-700 mb-4">Игроки</h2>
             <div className="space-y-3">
               {playerNames.map((name, i) => (
                 <div key={i}>
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-sm font-semibold text-muted-foreground shrink-0">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold text-white shrink-0" style={{ background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" }}>
                       {i + 1}
                     </div>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => updateName(i, e.target.value)}
-                      placeholder={`Игрок ${i + 1}`}
-                      className={`flex-1 px-3.5 py-2.5 rounded-xl border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all ${errors[i] ? "border-destructive" : "border-input"}`}
+                      placeholder={DEFAULT_NAMES[i]}
+                      className={`flex-1 px-3.5 py-2.5 rounded-xl border bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 transition-all ${errors[i] ? "border-red-300 focus:ring-red-200" : "border-sky-200 focus:ring-sky-200"}`}
                       disabled={createMutation.isPending}
                     />
                   </div>
                   {errors[i] && (
-                    <p className="text-xs text-destructive mt-1 ml-11">{errors[i]}</p>
+                    <p className="text-xs text-red-400 mt-1 ml-11">{errors[i]}</p>
                   )}
                 </div>
               ))}
+              <p className="text-xs text-slate-400 ml-11 mt-1">Если не вводить имя — применится имя по умолчанию</p>
             </div>
           </div>
 
           {globalError && (
-            <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl px-4 py-3">
+            <div className="bg-red-50 border border-red-200 text-red-500 text-sm rounded-xl px-4 py-3">
               {globalError}
             </div>
           )}
@@ -152,7 +159,8 @@ export default function NewTournamentPage() {
           <button
             type="submit"
             disabled={createMutation.isPending}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 rounded-xl transition-all shadow-sm disabled:opacity-60"
+            className="w-full text-white font-semibold py-3 rounded-xl transition-all shadow-sm disabled:opacity-60 hover:opacity-90"
+            style={{ background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" }}
           >
             {createMutation.isPending ? "Создание..." : "Начать турнир"}
           </button>

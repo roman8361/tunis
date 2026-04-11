@@ -97,17 +97,6 @@ export default function DashboardPage() {
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Action buttons */}
         <div className="space-y-3 mb-8 animate-slide-up">
-          <button
-            onClick={() => navigate("/tournaments/new")}
-            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-bold text-lg shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all"
-            style={{ background: "linear-gradient(135deg, #4BBCD4 0%, #3aa8be 100%)" }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 5v14M5 12h14" strokeLinecap="round"/>
-            </svg>
-            Создать новый турнир
-          </button>
-
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate("/about")}
@@ -131,6 +120,17 @@ export default function DashboardPage() {
               О команде
             </button>
           </div>
+
+          <button
+            onClick={() => navigate("/tournaments/new")}
+            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-bold text-lg shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all"
+            style={{ background: "linear-gradient(135deg, #4BBCD4 0%, #3aa8be 100%)" }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 5v14M5 12h14" strokeLinecap="round"/>
+            </svg>
+            Создать новый турнир
+          </button>
         </div>
 
         {/* Tournaments */}
