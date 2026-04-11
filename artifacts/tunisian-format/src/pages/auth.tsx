@@ -104,16 +104,15 @@ export default function AuthPage() {
                 className="animate-float"
                 style={{ filter: "drop-shadow(0 4px 14px rgba(0,0,0,0.18))" }}
               >
-                <circle cx="50" cy="50" r="47" fill="white" fillOpacity="0.15" stroke="white" strokeWidth="4"/>
-                {/* Горизонтальная дуга */}
-                <path d="M8 50 Q25 20 50 28 Q75 36 92 50" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-                <path d="M8 50 Q25 80 50 72 Q75 64 92 50" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-                {/* Вертикальная дуга */}
-                <path d="M50 3 Q62 25 50 50 Q38 75 50 97" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-                {/* Левая дуга */}
-                <path d="M50 3 Q18 18 10 50 Q18 82 50 97" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
-                {/* Правая дуга */}
-                <path d="M50 3 Q82 18 90 50 Q82 82 50 97" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                <circle cx="50" cy="50" r="47" fill="white" fillOpacity="0.15" stroke="white" strokeWidth="4.5"/>
+                {/* Верхняя горизонтальная дуга */}
+                <path d="M7,38 C22,22 38,18 50,18 C62,18 78,22 93,38" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                {/* Нижняя горизонтальная дуга */}
+                <path d="M7,62 C22,78 38,82 50,82 C62,82 78,78 93,62" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                {/* Левая вертикальная дуга */}
+                <path d="M26,5 C14,20 12,36 12,50 C12,64 14,80 26,95" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+                {/* Правая вертикальная дуга */}
+                <path d="M74,5 C86,20 88,36 88,50 C88,64 86,80 74,95" stroke="white" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-white drop-shadow-md tracking-tight">Тунисский формат</h1>

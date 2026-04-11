@@ -147,7 +147,6 @@ export default function NewTournamentPage() {
                   )}
                 </div>
               ))}
-              <p className="text-xs text-slate-400 ml-11 mt-1">Если не вводить имя — применится имя по умолчанию</p>
             </div>
           </div>
 
