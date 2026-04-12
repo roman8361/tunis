@@ -6,8 +6,4 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface CreateTournamentBody {
-  targetScore: number;
-  playerNames: string[];
-  format?: string;
-}
+export type TournamentRoundsItem = { [key: string]: unknown };

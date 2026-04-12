@@ -3,11 +3,13 @@ import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useGetMe } from "@workspace/api-client-react";
+import { useGetMe, useGetTournament } from "@workspace/api-client-react";
 import DashboardPage from "@/pages/dashboard";
 import NewTournamentPage from "@/pages/new-tournament";
 import TournamentPage from "@/pages/tournament";
+import TournamentClassicPage from "@/pages/tournament-classic";
 import TournamentResultsPage from "@/pages/tournament-results";
+import TournamentResultsClassicPage from "@/pages/tournament-results-classic";
 import AdminPage from "@/pages/admin";
 import AboutPage from "@/pages/about";
 import TeamPage from "@/pages/team";
@@ -60,6 +62,30 @@ function RouteAdmin() {
   return <AdminPage />;
 }
 
+function RouteTournament({ id }: { id: string }) {
+  const { data: tournament, isLoading } = useGetTournament(id, {
+    query: { enabled: !!id },
+  });
+
+  if (isLoading) return <LoadingScreen />;
+  if (!tournament) return <TournamentPage />;
+
+  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating";
+  return isClassic ? <TournamentClassicPage /> : <TournamentPage />;
+}
+
+function RouteTournamentResults({ id }: { id: string }) {
+  const { data: tournament, isLoading } = useGetTournament(id, {
+    query: { enabled: !!id },
+  });
+
+  if (isLoading) return <LoadingScreen />;
+  if (!tournament) return <TournamentResultsPage />;
+
+  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating";
+  return isClassic ? <TournamentResultsClassicPage /> : <TournamentResultsPage />;
+}
+
 function Router() {
   return (
     <GuestBootstrap>
@@ -67,8 +93,12 @@ function Router() {
         <Route path="/" component={DashboardPage} />
         <Route path="/dashboard" component={DashboardPage} />
         <Route path="/tournaments/new" component={NewTournamentPage} />
-        <Route path="/tournaments/:id/results" component={TournamentResultsPage} />
-        <Route path="/tournaments/:id" component={TournamentPage} />
+        <Route path="/tournaments/:id/results">
+          {(params) => <RouteTournamentResults id={params.id ?? ""} />}
+        </Route>
+        <Route path="/tournaments/:id">
+          {(params) => <RouteTournament id={params.id ?? ""} />}
+        </Route>
         <Route path="/admin" component={RouteAdmin} />
         <Route path="/about" component={AboutPage} />
         <Route path="/team" component={TeamPage} />

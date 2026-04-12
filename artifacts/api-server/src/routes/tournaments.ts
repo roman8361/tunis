@@ -1,23 +1,25 @@
 import { Router, type IRouter } from "express";
 import { randomUUID } from "crypto";
 import { db, tournamentsTable } from "@workspace/db";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { requireAuth } from "../lib/auth.js";
 import { generateRounds, calculateStats } from "../lib/tournament-generator.js";
+import { generateClassicRounds } from "../lib/classic-generator.js";
 import { CreateTournamentBody, GetTournamentParams, DeleteTournamentParams } from "@workspace/api-zod";
-import type { PlayerRecord, RoundRecord } from "@workspace/db";
+import type { PlayerRecord, RoundRecord, ClassicRoundRecord } from "@workspace/db";
 
 const router: IRouter = Router();
 
 function toSummary(t: typeof tournamentsTable.$inferSelect) {
   const players = t.players as PlayerRecord[];
-  const rounds = t.rounds as RoundRecord[];
+  const rounds = t.rounds as (RoundRecord | ClassicRoundRecord)[];
   return {
     id: t.id,
     userId: t.userId,
     createdAt: t.createdAt.toISOString(),
     finishedAt: t.finishedAt ? t.finishedAt.toISOString() : null,
     targetScore: t.targetScore,
+    format: t.format,
     status: t.status,
     playerNames: players.map((p) => p.name),
     completedRounds: rounds.filter((r) => r.completed).length,
@@ -31,9 +33,10 @@ function toFull(t: typeof tournamentsTable.$inferSelect) {
     createdAt: t.createdAt.toISOString(),
     finishedAt: t.finishedAt ? t.finishedAt.toISOString() : null,
     targetScore: t.targetScore,
+    format: t.format,
     status: t.status,
     players: t.players as PlayerRecord[],
-    rounds: t.rounds as RoundRecord[],
+    rounds: t.rounds as (RoundRecord | ClassicRoundRecord)[],
   };
 }
 
@@ -54,10 +57,17 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
     return;
   }
 
-  const { targetScore, playerNames } = parsed.data;
+  const { targetScore, playerNames, format } = parsed.data;
+  const isClassic = format === "classic-fixed" || format === "classic-rotating";
 
-  if (!playerNames || playerNames.length !== 5) {
-    res.status(400).json({ error: "Необходимо ввести имена ровно 5 игроков" });
+  if (!playerNames) {
+    res.status(400).json({ error: "Необходимо указать имена игроков" });
+    return;
+  }
+
+  const expectedCount = isClassic ? 6 : 5;
+  if (playerNames.length !== expectedCount) {
+    res.status(400).json({ error: `Необходимо ввести имена ровно ${expectedCount} игроков` });
     return;
   }
 
@@ -75,7 +85,7 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
   }
 
   const uniqueNames = new Set(trimmedNames.map((n) => n.toLowerCase()));
-  if (uniqueNames.size !== 5) {
+  if (uniqueNames.size !== expectedCount) {
     res.status(400).json({ error: "Имена игроков не должны повторяться" });
     return;
   }
@@ -89,8 +99,12 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
     pointsDiff: 0,
   }));
 
-  const rounds = generateRounds(players);
+  const rounds = isClassic
+    ? generateClassicRounds(players, format === "classic-rotating")
+    : generateRounds(players);
+
   const id = randomUUID();
+  const tournamentFormat = format ?? "tunisian";
 
   const [tournament] = await db
     .insert(tournamentsTable)
@@ -98,6 +112,7 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
       id,
       userId: req.user!.id,
       targetScore,
+      format: tournamentFormat,
       status: "in_progress",
       players,
       rounds,

@@ -11,6 +11,7 @@ export interface TournamentSummary {
   userId: string;
   createdAt: string;
   targetScore: number;
+  format: string;
   status: string;
   /** @nullable */
   finishedAt: string | null;

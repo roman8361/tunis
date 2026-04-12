@@ -17,6 +17,7 @@ export * from "./registerBody";
 export * from "./round";
 export * from "./successResponse";
 export * from "./tournament";
+export * from "./tournamentRoundsItem";
 export * from "./tournamentSummary";
 export * from "./updateRoundBody";
 export * from "./user";

@@ -66,6 +66,7 @@ export const ListTournamentsResponseItem = zod.object({
   userId: zod.string(),
   createdAt: zod.string(),
   targetScore: zod.number(),
+  format: zod.string(),
   status: zod.string(),
   finishedAt: zod.string().nullable(),
   playerNames: zod.array(zod.string()),
@@ -79,6 +80,7 @@ export const ListTournamentsResponse = zod.array(ListTournamentsResponseItem);
 export const CreateTournamentBody = zod.object({
   targetScore: zod.number(),
   playerNames: zod.array(zod.string()),
+  format: zod.string().optional(),
 });
 
 /**
@@ -93,6 +95,7 @@ export const GetTournamentResponse = zod.object({
   userId: zod.string(),
   createdAt: zod.string(),
   targetScore: zod.number(),
+  format: zod.string(),
   players: zod.array(
     zod.object({
       id: zod.number(),
@@ -103,19 +106,7 @@ export const GetTournamentResponse = zod.object({
       pointsDiff: zod.number(),
     }),
   ),
-  rounds: zod.array(
-    zod.object({
-      round: zod.number(),
-      restingPlayerId: zod.number(),
-      teamA: zod.array(zod.number()),
-      teamB: zod.array(zod.number()),
-      scoreA: zod.number().nullable(),
-      scoreB: zod.number().nullable(),
-      winner: zod.string().nullable(),
-      completed: zod.boolean(),
-      manuallyEditedTeams: zod.boolean(),
-    }),
-  ),
+  rounds: zod.array(zod.record(zod.string(), zod.unknown())),
   status: zod.string(),
   finishedAt: zod.string().nullable(),
 });
@@ -144,6 +135,7 @@ export const UpdateRoundBody = zod.object({
   scoreB: zod.number().nullish(),
   teamA: zod.array(zod.number()).nullish(),
   teamB: zod.array(zod.number()).nullish(),
+  gameNumber: zod.number().nullish(),
 });
 
 export const UpdateRoundResponse = zod.object({
@@ -151,6 +143,7 @@ export const UpdateRoundResponse = zod.object({
   userId: zod.string(),
   createdAt: zod.string(),
   targetScore: zod.number(),
+  format: zod.string(),
   players: zod.array(
     zod.object({
       id: zod.number(),
@@ -161,19 +154,7 @@ export const UpdateRoundResponse = zod.object({
       pointsDiff: zod.number(),
     }),
   ),
-  rounds: zod.array(
-    zod.object({
-      round: zod.number(),
-      restingPlayerId: zod.number(),
-      teamA: zod.array(zod.number()),
-      teamB: zod.array(zod.number()),
-      scoreA: zod.number().nullable(),
-      scoreB: zod.number().nullable(),
-      winner: zod.string().nullable(),
-      completed: zod.boolean(),
-      manuallyEditedTeams: zod.boolean(),
-    }),
-  ),
+  rounds: zod.array(zod.record(zod.string(), zod.unknown())),
   status: zod.string(),
   finishedAt: zod.string().nullable(),
 });
@@ -213,6 +194,7 @@ export const AdminListUserTournamentsResponseItem = zod.object({
   userId: zod.string(),
   createdAt: zod.string(),
   targetScore: zod.number(),
+  format: zod.string(),
   status: zod.string(),
   finishedAt: zod.string().nullable(),
   playerNames: zod.array(zod.string()),

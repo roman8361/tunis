@@ -71,13 +71,16 @@ export interface Round {
   manuallyEditedTeams: boolean;
 }
 
+export type TournamentRoundsItem = { [key: string]: unknown };
+
 export interface Tournament {
   id: string;
   userId: string;
   createdAt: string;
   targetScore: number;
+  format: string;
   players: Player[];
-  rounds: Round[];
+  rounds: TournamentRoundsItem[];
   status: string;
   /** @nullable */
   finishedAt: string | null;
@@ -88,6 +91,7 @@ export interface TournamentSummary {
   userId: string;
   createdAt: string;
   targetScore: number;
+  format: string;
   status: string;
   /** @nullable */
   finishedAt: string | null;
@@ -98,6 +102,7 @@ export interface TournamentSummary {
 export interface CreateTournamentBody {
   targetScore: number;
   playerNames: string[];
+  format?: string;
 }
 
 export interface UpdateRoundBody {
@@ -109,4 +114,6 @@ export interface UpdateRoundBody {
   teamA?: number[] | null;
   /** @nullable */
   teamB?: number[] | null;
+  /** @nullable */
+  gameNumber?: number | null;
 }

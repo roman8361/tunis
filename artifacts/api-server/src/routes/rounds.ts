@@ -3,8 +3,9 @@ import { db, tournamentsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "../lib/auth.js";
 import { calculateStats } from "../lib/tournament-generator.js";
+import { calculateClassicStats } from "../lib/classic-generator.js";
 import { UpdateRoundBody, UpdateRoundParams } from "@workspace/api-zod";
-import type { PlayerRecord, RoundRecord } from "@workspace/db";
+import type { PlayerRecord, RoundRecord, ClassicRoundRecord } from "@workspace/db";
 
 const router: IRouter = Router();
 
@@ -15,9 +16,10 @@ function toFull(t: typeof tournamentsTable.$inferSelect) {
     createdAt: t.createdAt.toISOString(),
     finishedAt: t.finishedAt ? t.finishedAt.toISOString() : null,
     targetScore: t.targetScore,
+    format: t.format,
     status: t.status,
     players: t.players as PlayerRecord[],
-    rounds: t.rounds as RoundRecord[],
+    rounds: t.rounds as (RoundRecord | ClassicRoundRecord)[],
   };
 }
 
@@ -52,6 +54,94 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     return;
   }
 
+  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating";
+
+  if (isClassic) {
+    // Classic format: update individual game score within a round
+    const rounds = [...(tournament.rounds as ClassicRoundRecord[])];
+    const roundIndex = rounds.findIndex((r) => r.round === params.data.roundNumber);
+
+    if (roundIndex === -1) {
+      res.status(404).json({ error: "Тур не найден" });
+      return;
+    }
+
+    const round = { ...rounds[roundIndex], games: [...rounds[roundIndex].games] };
+    const gameNumber = body.data.gameNumber;
+
+    if (gameNumber == null) {
+      res.status(400).json({ error: "Для классического формата необходимо указать номер игры" });
+      return;
+    }
+
+    const gameIndex = round.games.findIndex((g) => g.gameNumber === gameNumber);
+    if (gameIndex === -1) {
+      res.status(404).json({ error: "Игра не найдена" });
+      return;
+    }
+
+    const game = { ...round.games[gameIndex] };
+
+    if (body.data.scoreA != null && body.data.scoreB != null) {
+      const scoreA = body.data.scoreA;
+      const scoreB = body.data.scoreB;
+      const targetScore = tournament.targetScore;
+
+      if (scoreA < 0 || scoreB < 0) {
+        res.status(400).json({ error: "Счёт не может быть отрицательным" });
+        return;
+      }
+      if (scoreA === scoreB) {
+        res.status(400).json({ error: "Ничья недопустима" });
+        return;
+      }
+
+      const winScore = Math.max(scoreA, scoreB);
+      const loseScore = Math.min(scoreA, scoreB);
+      if (winScore !== targetScore) {
+        res.status(400).json({ error: `Победитель должен набрать ровно ${targetScore} очков` });
+        return;
+      }
+      if (loseScore >= targetScore) {
+        res.status(400).json({ error: `Проигравший должен набрать меньше ${targetScore} очков` });
+        return;
+      }
+
+      game.scoreA = scoreA;
+      game.scoreB = scoreB;
+      game.winner = scoreA > scoreB ? "A" : "B";
+      game.completed = true;
+    } else if (body.data.scoreA === null && body.data.scoreB === null) {
+      game.scoreA = null;
+      game.scoreB = null;
+      game.winner = null;
+      game.completed = false;
+    }
+
+    round.games[gameIndex] = game;
+    round.completed = round.games.every((g) => g.completed);
+    rounds[roundIndex] = round;
+
+    const originalPlayers = (tournament.players as PlayerRecord[]).map((p) => ({
+      id: p.id, name: p.name, gamesPlayed: 0, wins: 0, losses: 0, pointsDiff: 0,
+    }));
+
+    const updatedPlayers = calculateClassicStats(originalPlayers, rounds);
+    const allCompleted = rounds.every((r) => r.completed);
+    const status = allCompleted ? "finished" : "in_progress";
+    const finishedAt = allCompleted ? new Date() : null;
+
+    const [updated] = await db
+      .update(tournamentsTable)
+      .set({ rounds, players: updatedPlayers, status, finishedAt: finishedAt ?? undefined })
+      .where(eq(tournamentsTable.id, params.data.id))
+      .returning();
+
+    res.json(toFull(updated));
+    return;
+  }
+
+  // Tunisian format
   const rounds = [...(tournament.rounds as RoundRecord[])];
   const roundIndex = rounds.findIndex((r) => r.round === params.data.roundNumber);
 
@@ -62,7 +152,6 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
 
   const round = { ...rounds[roundIndex] };
 
-  // Update teams if provided
   if (body.data.teamA != null && body.data.teamB != null) {
     const newTeamA = body.data.teamA as number[];
     const newTeamB = body.data.teamB as number[];
@@ -73,13 +162,11 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     }
 
     const allActive = [...newTeamA, ...newTeamB];
-    const hasDuplicates = new Set(allActive).size !== allActive.length;
-    if (hasDuplicates) {
+    if (new Set(allActive).size !== allActive.length) {
       res.status(400).json({ error: "Один игрок не может быть в обеих командах" });
       return;
     }
 
-    // Verify resting player is not in any team
     if (allActive.includes(round.restingPlayerId)) {
       res.status(400).json({ error: "Игрок, пропускающий тур, не может участвовать в командах" });
       return;
@@ -90,18 +177,15 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     round.manuallyEditedTeams = true;
   }
 
-  // Update score if provided
   if (body.data.scoreA != null && body.data.scoreB != null) {
     const scoreA = body.data.scoreA;
     const scoreB = body.data.scoreB;
     const targetScore = tournament.targetScore;
 
-    // Validation
     if (scoreA < 0 || scoreB < 0) {
       res.status(400).json({ error: "Счёт не может быть отрицательным" });
       return;
     }
-
     if (scoreA === scoreB) {
       res.status(400).json({ error: "Ничья недопустима" });
       return;
@@ -112,12 +196,9 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     const loseScore = Math.min(scoreA, scoreB);
 
     if (winScore !== targetScore) {
-      res.status(400).json({
-        error: `Победитель должен набрать ровно ${targetScore} очков`,
-      });
+      res.status(400).json({ error: `Победитель должен набрать ровно ${targetScore} очков` });
       return;
     }
-
     if (loseScore >= targetScore) {
       res.status(400).json({ error: `Проигравший должен набрать меньше ${targetScore} очков` });
       return;
@@ -128,7 +209,6 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     round.winner = winner;
     round.completed = true;
   } else if (body.data.scoreA === null && body.data.scoreB === null) {
-    // Reset score
     round.scoreA = null;
     round.scoreB = null;
     round.winner = null;
@@ -137,31 +217,18 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
 
   rounds[roundIndex] = round;
 
-  // Recalculate player stats from all completed rounds
   const originalPlayers = (tournament.players as PlayerRecord[]).map((p) => ({
-    id: p.id,
-    name: p.name,
-    gamesPlayed: 0,
-    wins: 0,
-    losses: 0,
-    pointsDiff: 0,
+    id: p.id, name: p.name, gamesPlayed: 0, wins: 0, losses: 0, pointsDiff: 0,
   }));
 
   const updatedPlayers = calculateStats(originalPlayers, rounds);
-
-  // Check if all rounds are completed
   const allCompleted = rounds.every((r) => r.completed);
   const status = allCompleted ? "finished" : "in_progress";
   const finishedAt = allCompleted ? new Date() : null;
 
   const [updated] = await db
     .update(tournamentsTable)
-    .set({
-      rounds,
-      players: updatedPlayers,
-      status,
-      finishedAt: finishedAt ?? undefined,
-    })
+    .set({ rounds, players: updatedPlayers, status, finishedAt: finishedAt ?? undefined })
     .where(eq(tournamentsTable.id, params.data.id))
     .returning();
 

@@ -15,4 +15,6 @@ export interface UpdateRoundBody {
   teamA?: number[] | null;
   /** @nullable */
   teamB?: number[] | null;
+  /** @nullable */
+  gameNumber?: number | null;
 }

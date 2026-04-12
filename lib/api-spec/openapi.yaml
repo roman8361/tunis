@@ -560,6 +560,8 @@ components:
           type: string
         targetScore:
           type: integer
+        format:
+          type: string
         players:
           type: array
           items:
@@ -567,7 +569,8 @@ components:
         rounds:
           type: array
           items:
-            $ref: "#/components/schemas/Round"
+            type: object
+            additionalProperties: true
         status:
           type: string
         finishedAt:
@@ -577,6 +580,7 @@ components:
         - userId
         - createdAt
         - targetScore
+        - format
         - players
         - rounds
         - status
@@ -593,6 +597,8 @@ components:
           type: string
         targetScore:
           type: integer
+        format:
+          type: string
         status:
           type: string
         finishedAt:
@@ -608,6 +614,7 @@ components:
         - userId
         - createdAt
         - targetScore
+        - format
         - status
         - finishedAt
         - playerNames
@@ -622,6 +629,8 @@ components:
           type: array
           items:
             type: string
+        format:
+          type: string
       required:
         - targetScore
         - playerNames
@@ -641,3 +650,5 @@ components:
           type: ["array", "null"]
           items:
             type: integer
+        gameNumber:
+          type: ["integer", "null"]

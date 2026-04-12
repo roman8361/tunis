@@ -6,15 +6,16 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { Player } from "./player";
-import type { Round } from "./round";
+import type { TournamentRoundsItem } from "./tournamentRoundsItem";
 
 export interface Tournament {
   id: string;
   userId: string;
   createdAt: string;
   targetScore: number;
+  format: string;
   players: Player[];
-  rounds: Round[];
+  rounds: TournamentRoundsItem[];
   status: string;
   /** @nullable */
   finishedAt: string | null;

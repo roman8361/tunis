@@ -88,10 +88,14 @@ export default function NewTournamentPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
+    const format = isClassic
+      ? newPartnerEachRound ? "classic-rotating" : "classic-fixed"
+      : "tunisian";
     createMutation.mutate({
       data: {
         targetScore: targetScore!,
         playerNames: playerNames.map((_, i) => getEffectiveName(i)),
+        format,
       },
     });
   }

@@ -9,8 +9,9 @@ export const tournamentsTable = pgTable("tournaments", {
   finishedAt: timestamp("finished_at", { withTimezone: true }),
   targetScore: integer("target_score").notNull(),
   status: text("status").notNull().default("in_progress"),
+  format: text("format").notNull().default("tunisian"),
   players: jsonb("players").notNull().$type<PlayerRecord[]>(),
-  rounds: jsonb("rounds").notNull().$type<RoundRecord[]>(),
+  rounds: jsonb("rounds").notNull().$type<RoundRecord[] | ClassicRoundRecord[]>(),
 });
 
 export interface PlayerRecord {
@@ -32,6 +33,24 @@ export interface RoundRecord {
   winner: string | null;
   completed: boolean;
   manuallyEditedTeams: boolean;
+}
+
+export interface ClassicGameRecord {
+  gameNumber: number;
+  pairAKey: "A" | "B" | "C";
+  pairBKey: "A" | "B" | "C";
+  judgeKey: "A" | "B" | "C";
+  scoreA: number | null;
+  scoreB: number | null;
+  winner: "A" | "B" | null;
+  completed: boolean;
+}
+
+export interface ClassicRoundRecord {
+  round: number;
+  pairs: { A: number[]; B: number[]; C: number[] };
+  games: ClassicGameRecord[];
+  completed: boolean;
 }
 
 export const insertTournamentSchema = createInsertSchema(tournamentsTable).omit({ createdAt: true });
