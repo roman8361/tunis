@@ -400,15 +400,6 @@ export default function TournamentPage() {
                 </div>
               </div>
 
-              {/* Edit teams button */}
-              {!editingTeams && !currentRound.completed && (
-                <button
-                  onClick={startEditingTeams}
-                  className="w-full py-2.5 rounded-xl border-2 border-white/60 bg-white/50 backdrop-blur-sm text-white font-medium hover:bg-white/70 hover:text-slate-700 transition-all text-sm"
-                >
-                  Изменить пары вручную
-                </button>
-              )}
             </>
           )}
         </div>

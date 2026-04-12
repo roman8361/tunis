@@ -1,5 +1,5 @@
 import { useLocation } from "wouter";
-import { useListTournaments, useDeleteTournament, useGetMe, useLogout, getListTournamentsQueryKey } from "@workspace/api-client-react";
+import { useListTournaments, useDeleteTournament, useGetMe, getListTournamentsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import BeachBackground from "@/components/beach-background";
 
@@ -48,15 +48,6 @@ export default function DashboardPage() {
     },
   });
 
-  const logoutMutation = useLogout({
-    mutation: {
-      onSuccess: () => {
-        localStorage.removeItem("auth_token");
-        window.location.replace(import.meta.env.BASE_URL || "/");
-      },
-    },
-  });
-
   function handleDelete(id: string, e: React.MouseEvent) {
     e.stopPropagation();
     if (confirm("Удалить этот турнир? Это действие необратимо.")) {
@@ -71,29 +62,18 @@ export default function DashboardPage() {
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <VolleyballIcon size={32} className="shrink-0" />
-            <div>
-              <h1 className="font-extrabold text-lg leading-none" style={{ color: "#f97316" }}>
-                ТУНИССКИЙ ФОРМАТ
-              </h1>
-              <p className="text-xs text-slate-400 mt-0.5">{user?.email}</p>
-            </div>
+            <h1 className="font-extrabold text-lg leading-none" style={{ color: "#f97316" }}>
+              ТУНИССКИЙ ФОРМАТ
+            </h1>
           </div>
-          <div className="flex items-center gap-2">
-            {user?.role === "superadmin" && (
-              <button
-                onClick={() => navigate("/admin")}
-                className="px-3 py-1.5 text-sm text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-all"
-              >
-                Администрирование
-              </button>
-            )}
+          {user?.role === "superadmin" && (
             <button
-              onClick={() => logoutMutation.mutate({})}
-              className="px-3 py-1.5 text-sm text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+              onClick={() => navigate("/admin")}
+              className="px-3 py-1.5 text-sm text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-all"
             >
-              Выйти
+              Адмін
             </button>
-          </div>
+          )}
         </div>
       </header>
 

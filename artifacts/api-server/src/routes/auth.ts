@@ -63,6 +63,20 @@ router.post("/auth/login", async (req, res): Promise<void> => {
   });
 });
 
+router.post("/auth/guest", async (_req, res): Promise<void> => {
+  const id = randomUUID();
+  const email = `guest_${id}@local`;
+  const passwordHash = await hashPassword(randomUUID());
+
+  const [user] = await db.insert(usersTable).values({ id, email, passwordHash, role: "user" }).returning();
+  const token = signToken({ id: user.id, email: user.email, role: user.role });
+
+  res.status(201).json({
+    user: { id: user.id, email: user.email, role: user.role, createdAt: user.createdAt.toISOString() },
+    token,
+  });
+});
+
 router.post("/auth/logout", (_req, res): void => {
   res.json({ success: true });
 });

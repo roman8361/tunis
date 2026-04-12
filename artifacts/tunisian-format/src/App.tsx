@@ -1,9 +1,9 @@
+import { useState, useEffect } from "react";
 import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useGetMe } from "@workspace/api-client-react";
-import AuthPage from "@/pages/auth";
 import DashboardPage from "@/pages/dashboard";
 import NewTournamentPage from "@/pages/new-tournament";
 import TournamentPage from "@/pages/tournament";
@@ -25,67 +25,56 @@ const queryClient = new QueryClient({
   },
 });
 
-function ProtectedRoute({ component: Component, adminOnly = false }: { component: React.ComponentType; adminOnly?: boolean }) {
-  const { data: user, isLoading, error } = useGetMe();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(180deg, #c8eef8, #fff8e8)" }}>
-        <div className="text-slate-400">Загрузка...</div>
-      </div>
-    );
-  }
-
-  if (error || !user) {
-    return <Redirect to="/" />;
-  }
-
-  if (adminOnly && user.role !== "superadmin") {
-    return <Redirect to="/dashboard" />;
-  }
-
-  return <Component />;
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(180deg, #38bdf8 0%, #fde68a 100%)" }}>
+      <div className="text-white/80 text-sm">Загрузка...</div>
+    </div>
+  );
 }
 
-function PublicOnlyRoute({ component: Component }: { component: React.ComponentType }) {
+function GuestBootstrap({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = useState(!!localStorage.getItem("auth_token"));
+
+  useEffect(() => {
+    if (ready) return;
+    fetch("/api/auth/guest", { method: "POST" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("auth_token", data.token);
+        }
+        setReady(true);
+      })
+      .catch(() => setReady(true));
+  }, []);
+
+  if (!ready) return <LoadingScreen />;
+  return <>{children}</>;
+}
+
+function RouteAdmin() {
   const { data: user, isLoading } = useGetMe();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(180deg, #c8eef8, #fff8e8)" }}>
-        <div className="text-slate-400">Загрузка...</div>
-      </div>
-    );
-  }
-
-  if (user) {
-    return <Redirect to="/dashboard" />;
-  }
-
-  return <Component />;
+  if (isLoading) return <LoadingScreen />;
+  if (!user || user.role !== "superadmin") return <Redirect to="/dashboard" />;
+  return <AdminPage />;
 }
-
-// Stable component references — defined once outside Router to prevent remounting on every render
-function RouteHome() { return <PublicOnlyRoute component={AuthPage} />; }
-function RouteDashboard() { return <ProtectedRoute component={DashboardPage} />; }
-function RouteNewTournament() { return <ProtectedRoute component={NewTournamentPage} />; }
-function RouteTournamentResults() { return <ProtectedRoute component={TournamentResultsPage} />; }
-function RouteTournament() { return <ProtectedRoute component={TournamentPage} />; }
-function RouteAdmin() { return <ProtectedRoute component={AdminPage} adminOnly={true} />; }
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={RouteHome} />
-      <Route path="/dashboard" component={RouteDashboard} />
-      <Route path="/tournaments/new" component={RouteNewTournament} />
-      <Route path="/tournaments/:id/results" component={RouteTournamentResults} />
-      <Route path="/tournaments/:id" component={RouteTournament} />
-      <Route path="/admin" component={RouteAdmin} />
-      <Route path="/about" component={AboutPage} />
-      <Route path="/team" component={TeamPage} />
-      <Route component={NotFound} />
-    </Switch>
+    <GuestBootstrap>
+      <Switch>
+        <Route path="/" component={DashboardPage} />
+        <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/tournaments/new" component={NewTournamentPage} />
+        <Route path="/tournaments/:id/results" component={TournamentResultsPage} />
+        <Route path="/tournaments/:id" component={TournamentPage} />
+        <Route path="/admin" component={RouteAdmin} />
+        <Route path="/about" component={AboutPage} />
+        <Route path="/team" component={TeamPage} />
+        <Route component={NotFound} />
+      </Switch>
+    </GuestBootstrap>
   );
 }
 
