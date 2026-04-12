@@ -116,7 +116,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => navigate("/tournaments/new")}
+            onClick={() => navigate("/tournaments/new?mode=classic")}
             className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-bold text-lg shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all"
             style={{ background: "linear-gradient(135deg, #4BBCD4 0%, #3aa8be 100%)" }}
           >

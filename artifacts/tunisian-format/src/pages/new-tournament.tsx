@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { useCreateTournament, getListTournamentsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import BeachBackground from "@/components/beach-background";
 
 const TARGET_SCORES = [11, 15, 21];
 
-const DEFAULT_NAMES = [
+const DEFAULT_NAMES_TUNISIAN = [
   "Мыськив",
   "Архипов",
   "Веретюк",
@@ -14,13 +14,30 @@ const DEFAULT_NAMES = [
   "Мотрич",
 ];
 
+const DEFAULT_NAMES_CLASSIC = [
+  "Мыськив",
+  "Архипов",
+  "Веретюк",
+  "Егорова",
+  "Мотрич",
+  "Ганенко",
+];
+
 export default function NewTournamentPage() {
   const [, navigate] = useLocation();
+  const search = useSearch();
+  const params = new URLSearchParams(search);
+  const isClassic = params.get("mode") === "classic";
+
+  const defaultNames = isClassic ? DEFAULT_NAMES_CLASSIC : DEFAULT_NAMES_TUNISIAN;
+  const playerCount = isClassic ? 6 : 5;
+
   const queryClient = useQueryClient();
   const [targetScore, setTargetScore] = useState<number | null>(null);
-  const [playerNames, setPlayerNames] = useState(["", "", "", "", ""]);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [playerNames, setPlayerNames] = useState(Array(playerCount).fill(""));
+  const [errors, setErrors] = useState<string[]>(Array(playerCount).fill(""));
   const [globalError, setGlobalError] = useState("");
+  const [newPartnerEachRound, setNewPartnerEachRound] = useState(false);
 
   const createMutation = useCreateTournament({
     mutation: {
@@ -45,11 +62,11 @@ export default function NewTournamentPage() {
   }
 
   function getEffectiveName(index: number): string {
-    return playerNames[index].trim() || DEFAULT_NAMES[index];
+    return playerNames[index].trim() || defaultNames[index];
   }
 
   function validate() {
-    const newErrors = ["", "", "", "", ""];
+    const newErrors = Array(playerCount).fill("");
     let valid = true;
 
     if (!targetScore) {
@@ -94,7 +111,11 @@ export default function NewTournamentPage() {
           </button>
           <div>
             <h1 className="font-bold text-slate-700">Новый турнир</h1>
-            <p className="text-xs text-slate-400">Тунисский формат — 5 игроков, 15 туров</p>
+            <p className="text-xs text-slate-400">
+              {isClassic
+                ? "Классический формат — 6 игроков, 5 туров"
+                : "Тунисский формат — 5 игроков, 15 туров"}
+            </p>
           </div>
         </div>
       </header>
@@ -137,7 +158,7 @@ export default function NewTournamentPage() {
                       type="text"
                       value={name}
                       onChange={(e) => updateName(i, e.target.value)}
-                      placeholder={DEFAULT_NAMES[i]}
+                      placeholder={defaultNames[i]}
                       maxLength={20}
                       className={`flex-1 min-w-0 px-3.5 py-2.5 rounded-xl border bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 transition-all ${errors[i] ? "border-red-300 focus:ring-red-200" : "border-sky-200 focus:ring-sky-200"}`}
                       disabled={createMutation.isPending}
@@ -149,6 +170,28 @@ export default function NewTournamentPage() {
                 </div>
               ))}
             </div>
+
+            {/* Classic mode extra option */}
+            {isClassic && (
+              <label className="flex items-center gap-3 mt-5 cursor-pointer select-none">
+                <div
+                  onClick={() => setNewPartnerEachRound((v) => !v)}
+                  className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+                    newPartnerEachRound
+                      ? "border-transparent"
+                      : "border-sky-300 bg-white"
+                  }`}
+                  style={newPartnerEachRound ? { background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" } : {}}
+                >
+                  {newPartnerEachRound && (
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.5">
+                      <path d="M2 6l3 3 5-5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </div>
+                <span className="text-slate-600 text-sm font-medium">новый напарник каждый тур</span>
+              </label>
+            )}
           </div>
 
           {globalError && (
