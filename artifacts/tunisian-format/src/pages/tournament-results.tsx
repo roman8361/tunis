@@ -182,19 +182,13 @@ export default function TournamentResultsPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 pb-6">
+        <div className="pb-6">
           <button
             onClick={() => navigate("/tournaments/new")}
-            className="flex-1 py-3 rounded-xl text-white font-semibold transition-all hover:opacity-90 active:scale-[0.98] shadow-sm"
+            className="w-full py-3 rounded-xl text-white font-semibold transition-all hover:opacity-90 active:scale-[0.98] shadow-sm"
             style={{ background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" }}
           >
             Начать новый турнир
-          </button>
-          <button
-            onClick={exportCSV}
-            className="flex-1 py-3 rounded-xl border-2 border-sky-200 bg-white text-slate-600 font-semibold hover:border-sky-400 hover:bg-sky-50 transition-all"
-          >
-            Скачать CSV
           </button>
         </div>
       </main>

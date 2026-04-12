@@ -7,11 +7,11 @@ import BeachBackground from "@/components/beach-background";
 const TARGET_SCORES = [11, 15, 21];
 
 const DEFAULT_NAMES = [
-  "Игрок 1",
-  "Игрок 2",
-  "Игрок 3",
-  "Игрок 4",
-  "Игрок 5",
+  "Мыськив",
+  "Архипов",
+  "Веретюк",
+  "Лазуренко",
+  "Макрогузова",
 ];
 
 export default function NewTournamentPage() {
