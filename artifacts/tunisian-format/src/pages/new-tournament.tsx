@@ -138,7 +138,8 @@ export default function NewTournamentPage() {
                       value={name}
                       onChange={(e) => updateName(i, e.target.value)}
                       placeholder={DEFAULT_NAMES[i]}
-                      className={`flex-1 px-3.5 py-2.5 rounded-xl border bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 transition-all ${errors[i] ? "border-red-300 focus:ring-red-200" : "border-sky-200 focus:ring-sky-200"}`}
+                      maxLength={20}
+                      className={`flex-1 min-w-0 px-3.5 py-2.5 rounded-xl border bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 transition-all ${errors[i] ? "border-red-300 focus:ring-red-200" : "border-sky-200 focus:ring-sky-200"}`}
                       disabled={createMutation.isPending}
                     />
                   </div>
