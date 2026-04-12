@@ -197,7 +197,7 @@ export default function TournamentPage() {
     <BeachBackground className="flex flex-col">
       {/* Header */}
       <header className="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-10 border-b border-sky-100">
-        <div className="max-w-6xl mx-auto px-4 py-3">
+        <div className="max-w-2xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <button
@@ -215,7 +215,7 @@ export default function TournamentPage() {
                 <div className="text-xs text-slate-400">до {tournament.targetScore} очков</div>
               </div>
             </div>
-            <div className="text-sm font-medium text-slate-500">{completedRounds}/15 туров</div>
+            <div className="text-sm font-medium text-slate-500">{completedRounds}/15</div>
           </div>
           <div className="h-2 bg-sky-100 rounded-full overflow-hidden">
             <div
@@ -226,11 +226,12 @@ export default function TournamentPage() {
         </div>
       </header>
 
-      <div className="flex-1 max-w-6xl mx-auto w-full px-4 py-6 flex flex-col lg:flex-row gap-6">
-        {/* Round list sidebar */}
-        <div className="lg:w-52 shrink-0">
-          <h3 className="text-xs font-semibold text-white/80 uppercase tracking-wider mb-2">Туры</h3>
-          <div className="grid grid-cols-5 lg:grid-cols-3 gap-1.5">
+      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-4 flex flex-col gap-4">
+
+        {/* Round tabs — above main content */}
+        <div>
+          <div className="text-xs font-semibold text-white/80 uppercase tracking-wider mb-2">Туры</div>
+          <div className="grid grid-cols-5 gap-1.5">
             {rounds.map((r) => (
               <button
                 key={r.round}
@@ -239,11 +240,12 @@ export default function TournamentPage() {
                   savedRound === r.round
                     ? "bg-green-500 text-white scale-110 shadow-md"
                     : selectedRound === r.round
-                    ? "bg-primary text-primary-foreground shadow-sm"
+                    ? "text-white shadow-sm"
                     : r.completed
                     ? "bg-green-100 text-green-700 hover:bg-green-200"
                     : "bg-white/70 text-slate-600 hover:bg-white/90 hover:text-foreground backdrop-blur-sm"
                 }`}
+                style={selectedRound === r.round && savedRound !== r.round ? { background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" } : {}}
               >
                 {r.round}
               </button>
@@ -403,6 +405,7 @@ export default function TournamentPage() {
             </>
           )}
         </div>
+
       </div>
     </BeachBackground>
   );
