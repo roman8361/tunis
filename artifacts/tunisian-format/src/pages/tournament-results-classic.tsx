@@ -54,9 +54,9 @@ export default function TournamentResultsClassicPage() {
         { label: "Пара 3", players: [players[4], players[5]] },
       ].map((pair) => ({
         ...pair,
-        wins: pair.players.reduce((s, p) => s + p.wins, 0),
-        losses: pair.players.reduce((s, p) => s + p.losses, 0),
-        pointsDiff: pair.players.reduce((s, p) => s + p.pointsDiff, 0),
+        wins: pair.players.reduce((s, p) => s + p.wins, 0) / 2,
+        losses: pair.players.reduce((s, p) => s + p.losses, 0) / 2,
+        pointsDiff: pair.players.reduce((s, p) => s + p.pointsDiff, 0) / 2,
         gamesPlayed: Math.round(pair.players.reduce((s, p) => s + p.gamesPlayed, 0) / 2),
       })).sort((a, b) => b.wins - a.wins || b.pointsDiff - a.pointsDiff)
     : [];
