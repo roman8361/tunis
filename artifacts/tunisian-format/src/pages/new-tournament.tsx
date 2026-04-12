@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
 import { useCreateTournament, getListTournamentsQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -34,10 +34,16 @@ export default function NewTournamentPage() {
 
   const queryClient = useQueryClient();
   const [targetScore, setTargetScore] = useState<number | null>(null);
-  const [playerNames, setPlayerNames] = useState(Array(playerCount).fill(""));
+  const [playerNames, setPlayerNames] = useState<string[]>(Array(playerCount).fill(""));
   const [errors, setErrors] = useState<string[]>(Array(playerCount).fill(""));
   const [globalError, setGlobalError] = useState("");
   const [newPartnerEachRound, setNewPartnerEachRound] = useState(false);
+
+  useEffect(() => {
+    setPlayerNames(Array(playerCount).fill(""));
+    setErrors(Array(playerCount).fill(""));
+    setGlobalError("");
+  }, [playerCount]);
 
   const createMutation = useCreateTournament({
     mutation: {
@@ -62,7 +68,7 @@ export default function NewTournamentPage() {
   }
 
   function getEffectiveName(index: number): string {
-    return playerNames[index].trim() || defaultNames[index];
+    return (playerNames[index] ?? "").trim() || defaultNames[index];
   }
 
   function validate() {
@@ -94,7 +100,7 @@ export default function NewTournamentPage() {
     createMutation.mutate({
       data: {
         targetScore: targetScore!,
-        playerNames: playerNames.map((_, i) => getEffectiveName(i)),
+        playerNames: Array.from({ length: playerCount }, (_, i) => getEffectiveName(i)),
         format,
       },
     });
@@ -152,7 +158,7 @@ export default function NewTournamentPage() {
           <div className="bg-white/90 backdrop-blur border border-white/60 rounded-2xl p-6 shadow-sm">
             <h2 className="font-semibold text-slate-700 mb-4">Игроки</h2>
             <div className="space-y-3">
-              {playerNames.map((name, i) => (
+              {Array.from({ length: playerCount }, (_, i) => (
                 <div key={i}>
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold text-white shrink-0" style={{ background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" }}>
@@ -160,7 +166,7 @@ export default function NewTournamentPage() {
                     </div>
                     <input
                       type="text"
-                      value={name}
+                      value={playerNames[i] ?? ""}
                       onChange={(e) => updateName(i, e.target.value)}
                       placeholder={defaultNames[i]}
                       maxLength={20}
