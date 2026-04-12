@@ -61,24 +61,6 @@ export default function TournamentResultsClassicPage() {
       })).sort((a, b) => b.wins - a.wins || b.pointsDiff - a.pointsDiff)
     : [];
 
-  function copyToClipboard() {
-    const lines: string[] = [];
-    if (isRotating) {
-      lines.push(`Классический формат (смена напарников) — до ${tournament?.targetScore} очков`);
-      lines.push("");
-      sortedPlayers.forEach((p, i) => {
-        lines.push(`${i + 1}. ${p.name} — ${p.wins}П / ${p.losses}П / ${p.pointsDiff > 0 ? "+" : ""}${p.pointsDiff}`);
-      });
-    } else {
-      lines.push(`Классический формат (фиксированные пары) — до ${tournament?.targetScore} очков`);
-      lines.push("");
-      pairStats.forEach((pair, i) => {
-        lines.push(`${i + 1}. ${pair.players.map((p) => p.name).join(" / ")} — ${pair.wins}П / ${pair.pointsDiff > 0 ? "+" : ""}${pair.pointsDiff}`);
-      });
-    }
-    navigator.clipboard.writeText(lines.join("\n"));
-  }
-
   if (isLoading) {
     return (
       <BeachBackground className="flex items-center justify-center">
@@ -191,13 +173,6 @@ export default function TournamentResultsClassicPage() {
 
         {/* Actions */}
         <div className="flex gap-3">
-          <button
-            onClick={copyToClipboard}
-            className="flex-1 text-white font-semibold py-3 rounded-xl transition-all hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" }}
-          >
-            Скопировать результат
-          </button>
           <button
             onClick={() => navigate("/tournaments/new")}
             className="flex-1 bg-white/80 text-slate-700 font-semibold py-3 rounded-xl border border-sky-200 hover:bg-white transition-all"
