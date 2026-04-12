@@ -10,8 +10,8 @@ const DEFAULT_NAMES = [
   "Мыськив",
   "Архипов",
   "Веретюк",
-  "Лазуренко",
-  "Макрогузова",
+  "Егорова",
+  "Мотрич",
 ];
 
 export default function NewTournamentPage() {
