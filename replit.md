@@ -6,6 +6,11 @@ Web service for conducting beach volleyball mini-tournaments in the Tunisian for
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
 
+## Replit Migration
+
+- Migration completed in this environment: dependencies installed, PostgreSQL schema applied, API and web workflows restarted and verified.
+- Frontend API requests are routed through the artifact base path so preview-path routing remains compatible with Replit.
+
 ## Project: Тунисский формат
 
 - **Purpose**: Beach volleyball tournament management app — Tunisian format (5 players × 15 rounds)

@@ -40,7 +40,7 @@ function GuestBootstrap({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (ready) return;
-    fetch("/api/auth/guest", { method: "POST" })
+    fetch(`${import.meta.env.BASE_URL}api/auth/guest`, { method: "POST" })
       .then((r) => r.json())
       .then((data) => {
         if (data.token) {
