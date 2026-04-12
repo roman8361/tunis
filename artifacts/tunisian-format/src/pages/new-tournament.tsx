@@ -189,7 +189,7 @@ export default function NewTournamentPage() {
                     </svg>
                   )}
                 </div>
-                <span className="text-slate-600 text-sm font-medium">новый напарник каждый тур</span>
+                <span className="text-slate-600 text-sm font-medium">со сменой напарника каждый тур</span>
               </label>
             )}
           </div>
