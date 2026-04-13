@@ -1,4 +1,5 @@
 import type { PlayerRecord, RoundRecord } from "@workspace/db";
+import { randomInt } from "crypto";
 
 const TOTAL_ROUNDS = 15;
 const TOTAL_PLAYERS = 5;
@@ -31,7 +32,7 @@ export function generateRounds(players: PlayerRecord[]): RoundRecord[] {
     throw new Error(`Tunisian format requires exactly ${TOTAL_PLAYERS} players`);
   }
 
-  const playerIds = players.map((p) => p.id);
+  const playerIds = shufflePlayerIds(players.map((p) => p.id));
 
   return TUNISIAN_SCHEDULE.map(([teamAPositions, teamBPositions], index) => {
     const teamA = teamAPositions.map((position) => playerIds[position - 1]);
@@ -55,6 +56,17 @@ export function generateRounds(players: PlayerRecord[]): RoundRecord[] {
       manuallyEditedTeams: false,
     };
   });
+}
+
+function shufflePlayerIds(playerIds: number[]): number[] {
+  const shuffled = [...playerIds];
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled;
 }
 
 /**
