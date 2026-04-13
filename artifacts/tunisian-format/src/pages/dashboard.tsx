@@ -78,14 +78,6 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="mb-5 overflow-hidden rounded-2xl border border-white/60 bg-white/45 backdrop-blur-sm shadow-sm">
-          <div className="animate-marquee flex w-max items-center gap-10 py-2.5 text-sm font-semibold text-white drop-shadow-sm">
-            <span>Сервис будет доступен по адресу www.tunis.ru</span>
-            <span>Сервис будет доступен по адресу www.tunis.ru</span>
-            <span>Сервис будет доступен по адресу www.tunis.ru</span>
-          </div>
-        </div>
-
         {/* Action buttons */}
         <div className="space-y-3 mb-8 animate-slide-up">
           <div className="grid grid-cols-2 gap-3">
