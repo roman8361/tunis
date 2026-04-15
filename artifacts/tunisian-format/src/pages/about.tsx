@@ -4,6 +4,14 @@ import BeachBackground from "@/components/beach-background";
 export default function AboutPage() {
   const [, navigate] = useLocation();
 
+  const bulletClass = "flex items-start gap-2";
+  const bulletDot = (
+    <span
+      className="w-1.5 h-1.5 rounded-full mt-2 shrink-0"
+      style={{ background: "#4BBCD4" }}
+    />
+  );
+
   return (
     <BeachBackground>
       <header className="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-10 border-b border-sky-100">
@@ -27,69 +35,105 @@ export default function AboutPage() {
               <path d="M5 12Q8 7 12 12Q16 17 19 12" strokeLinecap="round"/>
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">Тунисский формат</h2>
+          <h2 className="text-2xl font-bold text-slate-800 mb-4">О сервисе</h2>
           <p className="text-slate-600 leading-relaxed text-base">
             Сервис создан для удобного проведения турниров по пляжному волейболу.
           </p>
           <div className="mt-6 pt-6 border-t border-sky-100">
-            <h3 className="font-semibold text-slate-700 mb-3">Как это работает</h3>
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Доступные форматы</h3>
+            <h4 className="font-semibold text-slate-700 mb-2">Классический формат (4 игрока)</h4>
+            <p className="text-slate-600 leading-relaxed text-base mb-4">
+              Формат для быстрой игры в полной четвёрке.
+            </p>
+            <h5 className="font-semibold text-slate-700 mb-3">Как это работает:</h5>
             <ul className="space-y-2 text-sm text-slate-500">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
-                5 игроков, 15 туров — каждый игрок пропускает ровно 3 тура
+              <li className={bulletClass}>
+                {bulletDot}
+                4 игрока, 2 пары, 3 тура играют друг против друга
               </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
-                Формат 2 на 2 — пары формируются автоматически с максимальным разнообразием
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+              <li className={bulletClass}>
+                {bulletDot}
                 Выбор лимита очков: 11, 15 или 21
               </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+              <li className={bulletClass}>
+                {bulletDot}
+                <span>
+                  Возможны два варианта игры:
+                  <span className="block mt-1 pl-4">фиксированные пары</span>
+                  <span className="block pl-4">или смена напарника перед каждым туром</span>
+                </span>
+              </li>
+              <li className={bulletClass}>
+                {bulletDot}
                 Автоматический подсчёт статистики и итоговых мест
               </li>
             </ul>
           </div>
           <div className="mt-8 pt-6 border-t border-sky-100">
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">Классический формат</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-4">Тунисский формат (5 игроков)</h2>
             <p className="text-slate-600 leading-relaxed text-base">
-              Дополнительно доступен классический формат для игры полной группой без пропусков.
+              Формат с ротацией игроков и максимальным разнообразием пар.
             </p>
             <div className="mt-6">
-              <h3 className="font-semibold text-slate-700 mb-3">Как это работает</h3>
+              <h3 className="font-semibold text-slate-700 mb-3">Как это работает:</h3>
               <ul className="space-y-2 text-sm text-slate-500">
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+                <li className={bulletClass}>
+                  {bulletDot}
+                  5 игроков, 15 туров — каждый игрок пропускает ровно 3 тура
+                </li>
+                <li className={bulletClass}>
+                  {bulletDot}
+                  Формат 2 на 2 — пары формируются автоматически с максимальным разнообразием
+                </li>
+                <li className={bulletClass}>
+                  {bulletDot}
+                  Выбор лимита очков: 11, 15 или 21
+                </li>
+                <li className={bulletClass}>
+                  {bulletDot}
+                  Автоматический подсчёт статистики и итоговых мест
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-8 pt-6 border-t border-sky-100">
+            <h2 className="text-xl font-bold text-slate-800 mb-4">Классический формат (6 игроков)</h2>
+            <p className="text-slate-600 leading-relaxed text-base">
+              Формат для полной группы с возможностью смены напарников.
+            </p>
+            <div className="mt-6">
+              <h3 className="font-semibold text-slate-700 mb-3">Как это работает:</h3>
+              <ul className="space-y-2 text-sm text-slate-500">
+                <li className={bulletClass}>
+                  {bulletDot}
                   6 игроков, 5 туров — все игроки участвуют в каждом туре
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+                <li className={bulletClass}>
+                  {bulletDot}
                   Формат 2 на 2 — в каждом туре формируются 3 пары
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+                <li className={bulletClass}>
+                  {bulletDot}
                   Каждая пара играет с каждой — 3 игры за тур
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+                <li className={bulletClass}>
+                  {bulletDot}
                   <span>
                     Возможны два режима:
                     <span className="block mt-1 pl-4">фиксированные пары</span>
                     <span className="block pl-4">или со сменой напарника каждый тур</span>
                   </span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+                <li className={bulletClass}>
+                  {bulletDot}
                   Выбор лимита очков: 11, 15 или 21 (игра без баланса)
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+                <li className={bulletClass}>
+                  {bulletDot}
                   Автоматический подсчёт статистики после каждой игры и тура
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "#4BBCD4" }}/>
+                <li className={bulletClass}>
+                  {bulletDot}
                   <span>
                     Итоговые места:
                     <span className="block mt-1 pl-4">по парам (при фиксированных командах)</span>
