@@ -42,6 +42,7 @@ export default function TournamentResultsClassicPage() {
   const players = (tournament?.players ?? []) as Player[];
   const rounds = (tournament?.rounds ?? []) as ClassicRound[];
   const isRotating = tournament?.format === "classic-rotating" || tournament?.format === "classic4-rotating";
+  const newTournamentPath = players.length === 4 ? "/tournaments/new?mode=classic4" : "/tournaments/new?mode=classic";
 
   const sortedPlayers = [...players].sort(
     (a, b) => b.wins - a.wins || b.pointsDiff - a.pointsDiff
@@ -177,7 +178,7 @@ export default function TournamentResultsClassicPage() {
         {/* Actions */}
         <div className="flex gap-3">
           <button
-            onClick={() => navigate("/tournaments/new")}
+            onClick={() => navigate(newTournamentPath)}
             className="flex-1 bg-white/80 text-slate-700 font-semibold py-3 rounded-xl border border-sky-200 hover:bg-white transition-all"
           >
             Новый турнир
