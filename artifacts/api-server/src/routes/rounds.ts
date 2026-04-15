@@ -6,6 +6,7 @@ import { calculateStats } from "../lib/tournament-generator.js";
 import { calculateClassicStats } from "../lib/classic-generator.js";
 import { UpdateRoundBody, UpdateRoundParams } from "@workspace/api-zod";
 import type { PlayerRecord, RoundRecord, ClassicRoundRecord } from "@workspace/db";
+import { recordTournamentResultLog } from "../lib/activity-log.js";
 
 const router: IRouter = Router();
 
@@ -133,9 +134,13 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
 
     const [updated] = await db
       .update(tournamentsTable)
-      .set({ rounds, players: updatedPlayers, status, finishedAt: finishedAt ?? undefined })
+      .set({ rounds, players: updatedPlayers, status, finishedAt })
       .where(eq(tournamentsTable.id, params.data.id))
       .returning();
+
+    if (allCompleted && tournament.status !== "finished") {
+      await recordTournamentResultLog(updated);
+    }
 
     res.json(toFull(updated));
     return;
@@ -228,9 +233,13 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
 
   const [updated] = await db
     .update(tournamentsTable)
-    .set({ rounds, players: updatedPlayers, status, finishedAt: finishedAt ?? undefined })
+    .set({ rounds, players: updatedPlayers, status, finishedAt })
     .where(eq(tournamentsTable.id, params.data.id))
     .returning();
+
+  if (allCompleted && tournament.status !== "finished") {
+    await recordTournamentResultLog(updated);
+  }
 
   res.json(toFull(updated));
 });

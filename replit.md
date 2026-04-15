@@ -45,8 +45,10 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - `artifacts/tunisian-format/src/App.tsx` — routes + auth guards
 - `artifacts/api-server/src/routes/` — auth, tournaments, rounds, admin routes
 - `artifacts/api-server/src/lib/tournament-generator.ts` — 15-round generation
+- `artifacts/api-server/src/lib/activity-log.ts` — database logging for app access and completed tournament results
 - `artifacts/api-server/src/lib/auth.ts` — JWT middleware
 - `lib/db/src/schema/tournaments.ts` — DB schema (JSONB for players/rounds)
+- `lib/db/src/schema/logs.ts` — DB schema for `app_access_logs` and `tournament_result_logs`
 - `lib/api-spec/openapi.yaml` — OpenAPI spec (source of truth for codegen)
 
 ## Stack
@@ -61,6 +63,10 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
 - **Frontend**: React + Vite + Tailwind CSS + wouter
+
+### Database Logging
+- `app_access_logs` records registration, login, guest login, app-open checks, failed attempts, IP address, user agent, user/email, and event status.
+- `tournament_result_logs` records a snapshot when a tournament transitions to finished, including format, target score, players, rounds, and calculated final results.
 
 ## Key Commands
 
