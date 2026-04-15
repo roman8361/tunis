@@ -105,6 +105,17 @@ export default function DashboardPage() {
           </div>
 
           <button
+            onClick={() => navigate("/tournaments/new?mode=classic4")}
+            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-bold text-lg shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all"
+            style={{ background: "linear-gradient(135deg, #4BBCD4 0%, #3aa8be 100%)" }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 5v14M5 12h14" strokeLinecap="round"/>
+            </svg>
+            классический (4 чел)
+          </button>
+
+          <button
             onClick={() => navigate("/tournaments/new")}
             className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-bold text-lg shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all"
             style={{ background: "linear-gradient(135deg, #4BBCD4 0%, #3aa8be 100%)" }}

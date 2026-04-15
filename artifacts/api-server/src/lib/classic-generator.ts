@@ -1,6 +1,7 @@
 import type { PlayerRecord, ClassicRoundRecord, ClassicGameRecord } from "@workspace/db";
 
-const TOTAL_ROUNDS = 5;
+const TOTAL_ROUNDS_6 = 5;
+const TOTAL_ROUNDS_4 = 3;
 
 // Rotating schedule: all 15 unique pairs (C(6,2)) covered exactly once over 5 rounds
 // Each round has 3 pairs: A, B, C
@@ -21,10 +22,40 @@ function makeGames(): ClassicGameRecord[] {
   ];
 }
 
+function makeFourPlayerGames(): ClassicGameRecord[] {
+  return [
+    { gameNumber: 1, pairAKey: "A", pairBKey: "B", scoreA: null, scoreB: null, winner: null, completed: false },
+  ];
+}
+
 export function generateClassicRounds(players: PlayerRecord[], rotating: boolean): ClassicRoundRecord[] {
   const ids = players.map((p) => p.id);
 
-  return Array.from({ length: TOTAL_ROUNDS }, (_, i) => {
+  if (players.length === 4) {
+    const rotatingSchedule: [number[], number[]][] = [
+      [[0, 1], [2, 3]],
+      [[0, 2], [1, 3]],
+      [[0, 3], [1, 2]],
+    ];
+
+    return Array.from({ length: TOTAL_ROUNDS_4 }, (_, i) => {
+      const [pairAIdx, pairBIdx] = rotating
+        ? rotatingSchedule[i]
+        : [[0, 1], [2, 3]];
+
+      return {
+        round: i + 1,
+        pairs: {
+          A: pairAIdx.map((idx) => ids[idx]),
+          B: pairBIdx.map((idx) => ids[idx]),
+        },
+        games: makeFourPlayerGames(),
+        completed: false,
+      };
+    });
+  }
+
+  return Array.from({ length: TOTAL_ROUNDS_6 }, (_, i) => {
     let pairA: number[], pairB: number[], pairC: number[];
 
     if (rotating) {

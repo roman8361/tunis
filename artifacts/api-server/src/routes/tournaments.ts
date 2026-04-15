@@ -58,14 +58,15 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
   }
 
   const { targetScore, playerNames, format } = parsed.data;
-  const isClassic = format === "classic-fixed" || format === "classic-rotating";
+  const isClassic = format === "classic-fixed" || format === "classic-rotating" || format === "classic4-fixed" || format === "classic4-rotating";
+  const isClassic4 = format === "classic4-fixed" || format === "classic4-rotating";
 
   if (!playerNames) {
     res.status(400).json({ error: "Необходимо указать имена игроков" });
     return;
   }
 
-  const expectedCount = isClassic ? 6 : 5;
+  const expectedCount = isClassic4 ? 4 : isClassic ? 6 : 5;
   if (playerNames.length !== expectedCount) {
     res.status(400).json({ error: `Необходимо ввести имена ровно ${expectedCount} игроков` });
     return;
@@ -100,7 +101,7 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
   }));
 
   const rounds = isClassic
-    ? generateClassicRounds(players, format === "classic-rotating")
+    ? generateClassicRounds(players, format === "classic-rotating" || format === "classic4-rotating")
     : generateRounds(players);
 
   const id = randomUUID();

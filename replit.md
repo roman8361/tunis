@@ -35,6 +35,12 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - `/admin` — admin panel (user list, their tournaments) — superadmin only
 - `/about`, `/team` — info pages
 
+### Classic 4-player format
+- Dashboard includes `классический (4 чел)` above the Tunisian tournament button.
+- Uses 4 players, 3 rounds, 1 game per round.
+- Fixed mode keeps pairs 1–2 vs 3–4 for all 3 rounds.
+- Rotating mode uses 1–2 vs 3–4, 1–3 vs 2–4, 1–4 vs 2–3 so each player partners with every other player once.
+
 ### Key Files
 - `artifacts/tunisian-format/src/App.tsx` — routes + auth guards
 - `artifacts/api-server/src/routes/` — auth, tournaments, rounds, admin routes

@@ -39,7 +39,7 @@ export interface ClassicGameRecord {
   gameNumber: number;
   pairAKey: "A" | "B" | "C";
   pairBKey: "A" | "B" | "C";
-  judgeKey: "A" | "B" | "C";
+  judgeKey?: "A" | "B" | "C";
   scoreA: number | null;
   scoreB: number | null;
   winner: "A" | "B" | null;
@@ -48,7 +48,7 @@ export interface ClassicGameRecord {
 
 export interface ClassicRoundRecord {
   round: number;
-  pairs: { A: number[]; B: number[]; C: number[] };
+  pairs: { A: number[]; B: number[]; C?: number[] };
   games: ClassicGameRecord[];
   completed: boolean;
 }

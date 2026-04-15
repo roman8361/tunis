@@ -17,7 +17,7 @@ interface ClassicGame {
   gameNumber: number;
   pairAKey: "A" | "B" | "C";
   pairBKey: "A" | "B" | "C";
-  judgeKey: "A" | "B" | "C";
+  judgeKey?: "A" | "B" | "C";
   scoreA: number | null;
   scoreB: number | null;
   winner: "A" | "B" | null;
@@ -26,7 +26,7 @@ interface ClassicGame {
 
 interface ClassicRound {
   round: number;
-  pairs: { A: number[]; B: number[]; C: number[] };
+  pairs: { A: number[]; B: number[]; C?: number[] };
   games: ClassicGame[];
   completed: boolean;
 }
@@ -84,7 +84,7 @@ export default function TournamentClassicPage() {
 
   const rounds = (tournament?.rounds ?? []) as ClassicRound[];
   const players = (tournament?.players ?? []) as Player[];
-  const isRotating = tournament?.format === "classic-rotating";
+  const isRotating = tournament?.format === "classic-rotating" || tournament?.format === "classic4-rotating";
 
   useEffect(() => {
     if (rounds.length > 0) {
@@ -151,19 +151,18 @@ export default function TournamentClassicPage() {
   }
 
   const completedRounds = rounds.filter((r) => r.completed).length;
-  const totalRounds = 5;
+  const totalRounds = rounds.length || 1;
   const progress = (completedRounds / totalRounds) * 100;
 
   const sortedPlayers = isRotating
     ? [...players].sort((a, b) => b.wins - a.wins || b.pointsDiff - a.pointsDiff)
     : players;
 
-  const pairs = !isRotating && players.length === 6
-    ? [
-        { label: "Пара 1", players: [players[0], players[1]] },
-        { label: "Пара 2", players: [players[2], players[3]] },
-        { label: "Пара 3", players: [players[4], players[5]] },
-      ].map((pair) => ({
+  const pairs = !isRotating && (players.length === 6 || players.length === 4)
+    ? Array.from({ length: players.length / 2 }, (_, i) => ({
+        label: `Пара ${i + 1}`,
+        players: [players[i * 2], players[i * 2 + 1]],
+      })).map((pair) => ({
         ...pair,
         wins: pair.players.reduce((s, p) => s + p.wins, 0) / 2,
         losses: pair.players.reduce((s, p) => s + p.losses, 0) / 2,
@@ -266,8 +265,12 @@ export default function TournamentClassicPage() {
                   <div className="font-bold text-foreground">Тур {currentRound.round}</div>
                   <div className="text-xs text-muted-foreground mt-0.5">
                     <span className="font-medium text-slate-600">A:</span> {getPairName(currentRound, "A")} &nbsp;·&nbsp;
-                    <span className="font-medium text-slate-600">B:</span> {getPairName(currentRound, "B")} &nbsp;·&nbsp;
-                    <span className="font-medium text-slate-600">C:</span> {getPairName(currentRound, "C")}
+                    <span className="font-medium text-slate-600">B:</span> {getPairName(currentRound, "B")}
+                    {currentRound.pairs.C && (
+                      <>
+                        &nbsp;·&nbsp;<span className="font-medium text-slate-600">C:</span> {getPairName(currentRound, "C")}
+                      </>
+                    )}
                   </div>
                 </div>
                 {currentRound.completed && (
@@ -307,11 +310,12 @@ export default function TournamentClassicPage() {
 
               {currentGame && (
                 <>
-                  {/* Judge info */}
-                  <div className="text-xs text-slate-500 mb-4 bg-slate-50 rounded-xl px-3 py-2">
-                    Судит пара <span className="font-semibold text-slate-700">{currentGame.judgeKey}</span>:{" "}
-                    {getPairName(currentRound, currentGame.judgeKey)}
-                  </div>
+                  {currentGame.judgeKey && (
+                    <div className="text-xs text-slate-500 mb-4 bg-slate-50 rounded-xl px-3 py-2">
+                      Судит пара <span className="font-semibold text-slate-700">{currentGame.judgeKey}</span>:{" "}
+                      {getPairName(currentRound, currentGame.judgeKey)}
+                    </div>
+                  )}
 
                   {/* Teams */}
                   <div className="flex items-stretch gap-4 mb-5">

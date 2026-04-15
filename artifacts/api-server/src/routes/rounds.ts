@@ -54,7 +54,7 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     return;
   }
 
-  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating";
+  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating" || tournament.format === "classic4-fixed" || tournament.format === "classic4-rotating";
 
   if (isClassic) {
     // Classic format: update individual game score within a round

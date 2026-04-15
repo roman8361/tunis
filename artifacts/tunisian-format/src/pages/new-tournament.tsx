@@ -23,14 +23,24 @@ const DEFAULT_NAMES_CLASSIC = [
   "Ганенко",
 ];
 
+const DEFAULT_NAMES_CLASSIC_4 = [
+  "Мыськив",
+  "Архипов",
+  "Мотрич",
+  "Ганенко",
+];
+
 export default function NewTournamentPage() {
   const [, navigate] = useLocation();
   const search = useSearch();
   const params = new URLSearchParams(search);
-  const isClassic = params.get("mode") === "classic";
+  const mode = params.get("mode");
+  const isClassic4 = mode === "classic4";
+  const isClassic6 = mode === "classic";
+  const isClassic = isClassic4 || isClassic6;
 
-  const defaultNames = isClassic ? DEFAULT_NAMES_CLASSIC : DEFAULT_NAMES_TUNISIAN;
-  const playerCount = isClassic ? 6 : 5;
+  const defaultNames = isClassic4 ? DEFAULT_NAMES_CLASSIC_4 : isClassic6 ? DEFAULT_NAMES_CLASSIC : DEFAULT_NAMES_TUNISIAN;
+  const playerCount = isClassic4 ? 4 : isClassic6 ? 6 : 5;
 
   const queryClient = useQueryClient();
   const [targetScore, setTargetScore] = useState<number | null>(null);
@@ -95,7 +105,9 @@ export default function NewTournamentPage() {
     e.preventDefault();
     if (!validate()) return;
     const format = isClassic
-      ? newPartnerEachRound ? "classic-rotating" : "classic-fixed"
+      ? isClassic4
+        ? newPartnerEachRound ? "classic4-rotating" : "classic4-fixed"
+        : newPartnerEachRound ? "classic-rotating" : "classic-fixed"
       : "tunisian";
     createMutation.mutate({
       data: {
@@ -122,7 +134,9 @@ export default function NewTournamentPage() {
           <div>
             <h1 className="font-bold text-slate-700">Новый турнир</h1>
             <p className="text-xs text-slate-400">
-              {isClassic
+              {isClassic4
+                ? "Классический формат — 4 игрока, 3 тура"
+                : isClassic6
                 ? "Классический формат — 6 игроков, 5 туров"
                 : "Тунисский формат — 5 игроков, 15 туров"}
             </p>

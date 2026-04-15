@@ -70,7 +70,7 @@ function RouteTournament({ id }: { id: string }) {
   if (isLoading) return <LoadingScreen />;
   if (!tournament) return <TournamentPage />;
 
-  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating";
+  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating" || tournament.format === "classic4-fixed" || tournament.format === "classic4-rotating";
   return isClassic ? <TournamentClassicPage /> : <TournamentPage />;
 }
 
@@ -82,7 +82,7 @@ function RouteTournamentResults({ id }: { id: string }) {
   if (isLoading) return <LoadingScreen />;
   if (!tournament) return <TournamentResultsPage />;
 
-  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating";
+  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating" || tournament.format === "classic4-fixed" || tournament.format === "classic4-rotating";
   return isClassic ? <TournamentResultsClassicPage /> : <TournamentResultsPage />;
 }
 
