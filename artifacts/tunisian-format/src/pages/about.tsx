@@ -40,8 +40,7 @@ export default function AboutPage() {
             Сервис создан для удобного проведения турниров по пляжному волейболу.
           </p>
           <div className="mt-6 pt-6 border-t border-sky-100">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">Доступные форматы</h3>
-            <h4 className="font-semibold text-slate-700 mb-2">Классический формат (4 игрока)</h4>
+            <h3 className="text-xl font-bold text-slate-800 mb-4">Классический формат (4 игрока)</h3>
             <p className="text-slate-600 leading-relaxed text-base mb-4">
               Формат для быстрой игры в полной четвёрке.
             </p>
