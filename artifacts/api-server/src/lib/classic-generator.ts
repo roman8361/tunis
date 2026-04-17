@@ -99,8 +99,8 @@ export function calculateClassicStats(
     for (const game of round.games) {
       if (!game.completed || game.scoreA === null || game.scoreB === null) continue;
 
-      const pairA = round.pairs[game.pairAKey];
-      const pairB = round.pairs[game.pairBKey];
+      const pairA = round.pairs[game.pairAKey] ?? [];
+      const pairB = round.pairs[game.pairBKey] ?? [];
 
       const diff = Math.abs(game.scoreA - game.scoreB);
       if (game.winner === null) {
