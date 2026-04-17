@@ -1,5 +1,5 @@
 import { useParams, useLocation } from "wouter";
-import { useGetTournament } from "@workspace/api-client-react";
+import { useGetTournament, getGetTournamentQueryKey } from "@workspace/api-client-react";
 import BeachBackground from "@/components/beach-background";
 
 interface Player {
@@ -34,7 +34,7 @@ export default function TournamentResultsPage() {
   const [, navigate] = useLocation();
 
   const { data: tournament, isLoading } = useGetTournament(id ?? "", {
-    query: { enabled: !!id },
+    query: { enabled: !!id, queryKey: getGetTournamentQueryKey(id ?? "") },
   });
 
   if (isLoading) {
@@ -57,7 +57,7 @@ export default function TournamentResultsPage() {
   }
 
   const players = (tournament.players ?? []) as Player[];
-  const rounds = (tournament.rounds ?? []) as Round[];
+  const rounds = (tournament.rounds ?? []) as unknown as Round[];
 
   const sortedPlayers = [...players].sort((a, b) => {
     if (b.wins !== a.wins) return b.wins - a.wins;

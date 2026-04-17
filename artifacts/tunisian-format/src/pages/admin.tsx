@@ -5,6 +5,7 @@ import {
   useAdminDeleteUser,
   useAdminListUserTournaments,
   getAdminListUsersQueryKey,
+  getAdminListUserTournamentsQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -29,7 +30,7 @@ export default function AdminPage() {
 
   const { data: users, isLoading } = useAdminListUsers();
   const { data: userTournaments } = useAdminListUserTournaments(selectedUserId ?? "", {
-    query: { enabled: !!selectedUserId },
+    query: { enabled: !!selectedUserId, queryKey: getAdminListUserTournamentsQueryKey(selectedUserId ?? "") },
   });
 
   const deleteMutation = useAdminDeleteUser({

@@ -35,7 +35,7 @@ export default function TournamentPage() {
   const queryClient = useQueryClient();
 
   const { data: tournament, isLoading, error } = useGetTournament(id ?? "", {
-    query: { enabled: !!id },
+    query: { enabled: !!id, queryKey: getGetTournamentQueryKey(id ?? "") },
   });
 
   const [selectedRound, setSelectedRound] = useState<number>(1);
@@ -59,7 +59,7 @@ export default function TournamentPage() {
         }
         setSavedRound(selectedRound);
         setTimeout(() => setSavedRound(null), 1200);
-        const updatedRounds = (data.rounds ?? []) as Round[];
+        const updatedRounds = (data.rounds ?? []) as unknown as Round[];
         const nextIncomplete = updatedRounds.find((r) => !r.completed);
         if (nextIncomplete) {
           setTimeout(() => setSelectedRound(nextIncomplete.round), 600);
@@ -71,7 +71,7 @@ export default function TournamentPage() {
     },
   });
 
-  const rounds = (tournament?.rounds ?? []) as Round[];
+  const rounds = (tournament?.rounds ?? []) as unknown as Round[];
   const players = (tournament?.players ?? []) as Player[];
 
   useEffect(() => {

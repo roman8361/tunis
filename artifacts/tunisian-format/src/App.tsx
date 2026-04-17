@@ -3,7 +3,7 @@ import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useGetMe, useGetTournament } from "@workspace/api-client-react";
+import { useGetMe, useGetTournament, getGetTournamentQueryKey } from "@workspace/api-client-react";
 import DashboardPage from "@/pages/dashboard";
 import NewTournamentPage from "@/pages/new-tournament";
 import TournamentPage from "@/pages/tournament";
@@ -64,7 +64,7 @@ function RouteAdmin() {
 
 function RouteTournament({ id }: { id: string }) {
   const { data: tournament, isLoading } = useGetTournament(id, {
-    query: { enabled: !!id },
+    query: { enabled: !!id, queryKey: getGetTournamentQueryKey(id) },
   });
 
   if (isLoading) return <LoadingScreen />;
@@ -76,7 +76,7 @@ function RouteTournament({ id }: { id: string }) {
 
 function RouteTournamentResults({ id }: { id: string }) {
   const { data: tournament, isLoading } = useGetTournament(id, {
-    query: { enabled: !!id },
+    query: { enabled: !!id, queryKey: getGetTournamentQueryKey(id) },
   });
 
   if (isLoading) return <LoadingScreen />;

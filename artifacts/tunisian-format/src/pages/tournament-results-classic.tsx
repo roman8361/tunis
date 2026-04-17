@@ -1,5 +1,5 @@
 import { useParams, useLocation } from "wouter";
-import { useGetTournament } from "@workspace/api-client-react";
+import { useGetTournament, getGetTournamentQueryKey } from "@workspace/api-client-react";
 import BeachBackground from "@/components/beach-background";
 
 interface Player {
@@ -36,11 +36,11 @@ export default function TournamentResultsClassicPage() {
   const [, navigate] = useLocation();
 
   const { data: tournament, isLoading } = useGetTournament(id ?? "", {
-    query: { enabled: !!id },
+    query: { enabled: !!id, queryKey: getGetTournamentQueryKey(id ?? "") },
   });
 
   const players = (tournament?.players ?? []) as Player[];
-  const rounds = (tournament?.rounds ?? []) as ClassicRound[];
+  const rounds = (tournament?.rounds ?? []) as unknown as ClassicRound[];
   const isRotating = tournament?.format?.startsWith("classic-rotating") || tournament?.format?.startsWith("classic4-rotating");
   const isBalanced = tournament?.format?.endsWith("-balanced") ?? false;
   const newTournamentPath = players.length === 4 ? "/tournaments/new?mode=classic4" : "/tournaments/new?mode=classic";

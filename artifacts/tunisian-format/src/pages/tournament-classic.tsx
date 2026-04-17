@@ -37,7 +37,7 @@ export default function TournamentClassicPage() {
   const queryClient = useQueryClient();
 
   const { data: tournament, isLoading, error } = useGetTournament(id ?? "", {
-    query: { enabled: !!id },
+    query: { enabled: !!id, queryKey: getGetTournamentQueryKey(id ?? "") },
   });
 
   const [selectedRound, setSelectedRound] = useState<number>(1);
@@ -59,7 +59,7 @@ export default function TournamentClassicPage() {
         setSavedGame(`${selectedRound}-${selectedGame}`);
         setTimeout(() => setSavedGame(null), 1200);
 
-        const updatedRounds = (data.rounds ?? []) as ClassicRound[];
+        const updatedRounds = (data.rounds ?? []) as unknown as ClassicRound[];
         const curRound = updatedRounds.find((r) => r.round === selectedRound);
         if (curRound) {
           const nextGame = curRound.games.find((g) => !g.completed);
@@ -82,7 +82,7 @@ export default function TournamentClassicPage() {
     },
   });
 
-  const rounds = (tournament?.rounds ?? []) as ClassicRound[];
+  const rounds = (tournament?.rounds ?? []) as unknown as ClassicRound[];
   const players = (tournament?.players ?? []) as Player[];
   const isRotating = tournament?.format?.startsWith("classic-rotating") || tournament?.format?.startsWith("classic4-rotating");
   const isBalanced = tournament?.format?.endsWith("-balanced") ?? false;
