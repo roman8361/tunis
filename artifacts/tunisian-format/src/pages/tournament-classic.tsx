@@ -84,7 +84,7 @@ export default function TournamentClassicPage() {
 
   const rounds = (tournament?.rounds ?? []) as ClassicRound[];
   const players = (tournament?.players ?? []) as Player[];
-  const isRotating = tournament?.format === "classic-rotating" || tournament?.format?.startsWith("classic4-rotating");
+  const isRotating = tournament?.format?.startsWith("classic-rotating") || tournament?.format?.startsWith("classic4-rotating");
   const isBalanced = tournament?.format?.endsWith("-balanced") ?? false;
 
   useEffect(() => {

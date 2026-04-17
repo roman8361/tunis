@@ -105,11 +105,11 @@ export default function NewTournamentPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
-    const balanceSuffix = isClassic4 && withBalance ? "-balanced" : "";
+    const balanceSuffix = isClassic && withBalance ? "-balanced" : "";
     const format = isClassic
       ? isClassic4
         ? newPartnerEachRound ? `classic4-rotating${balanceSuffix}` : `classic4-fixed${balanceSuffix}`
-        : newPartnerEachRound ? "classic-rotating" : "classic-fixed"
+        : newPartnerEachRound ? `classic-rotating${balanceSuffix}` : `classic-fixed${balanceSuffix}`
       : "tunisian";
     createMutation.mutate({
       data: {
@@ -219,7 +219,7 @@ export default function NewTournamentPage() {
                   <span className="text-slate-600 text-sm font-medium">со сменой напарника каждый тур</span>
                 </label>
 
-                {isClassic4 && (
+                {isClassic && (
                   <label className="flex items-center gap-3 cursor-pointer select-none">
                     <div
                       onClick={() => setWithBalance((v) => !v)}

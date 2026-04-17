@@ -40,7 +40,7 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - Uses 4 players, 3 rounds, 1 game per round.
 - Fixed mode keeps pairs 1–2 vs 3–4 for all 3 rounds.
 - Rotating mode uses 1–2 vs 3–4, 1–3 vs 2–4, 1–4 vs 2–3 so each player partners with every other player once.
-- Optional balanced mode stores formats with `-balanced`, disables score autofill, and validates classic 4-player scores only as whole numbers from 0 to 100.
+- Optional balanced mode stores classic 4-player and 6-player formats with `-balanced`, disables score autofill, and validates scores only as whole numbers from 0 to 100.
 
 ### Key Files
 - `artifacts/tunisian-format/src/App.tsx` — routes + auth guards

@@ -41,7 +41,7 @@ export default function TournamentResultsClassicPage() {
 
   const players = (tournament?.players ?? []) as Player[];
   const rounds = (tournament?.rounds ?? []) as ClassicRound[];
-  const isRotating = tournament?.format === "classic-rotating" || tournament?.format?.startsWith("classic4-rotating");
+  const isRotating = tournament?.format?.startsWith("classic-rotating") || tournament?.format?.startsWith("classic4-rotating");
   const isBalanced = tournament?.format?.endsWith("-balanced") ?? false;
   const newTournamentPath = players.length === 4 ? "/tournaments/new?mode=classic4" : "/tournaments/new?mode=classic";
 

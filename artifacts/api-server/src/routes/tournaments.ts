@@ -11,7 +11,7 @@ import type { PlayerRecord, RoundRecord, ClassicRoundRecord } from "@workspace/d
 const router: IRouter = Router();
 
 function isClassicFormat(format: string | undefined): boolean {
-  return format === "classic-fixed" || format === "classic-rotating" || format?.startsWith("classic4-fixed") === true || format?.startsWith("classic4-rotating") === true;
+  return format?.startsWith("classic-fixed") === true || format?.startsWith("classic-rotating") === true || format?.startsWith("classic4-fixed") === true || format?.startsWith("classic4-rotating") === true;
 }
 
 function isClassic4Format(format: string | undefined): boolean {
@@ -19,7 +19,7 @@ function isClassic4Format(format: string | undefined): boolean {
 }
 
 function isRotatingFormat(format: string | undefined): boolean {
-  return format === "classic-rotating" || format?.startsWith("classic4-rotating") === true;
+  return format?.startsWith("classic-rotating") === true || format?.startsWith("classic4-rotating") === true;
 }
 
 function toSummary(t: typeof tournamentsTable.$inferSelect) {

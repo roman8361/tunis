@@ -11,7 +11,7 @@ import { recordTournamentResultLog } from "../lib/activity-log.js";
 const router: IRouter = Router();
 
 function isClassicFormat(format: string): boolean {
-  return format === "classic-fixed" || format === "classic-rotating" || format.startsWith("classic4-fixed") || format.startsWith("classic4-rotating");
+  return format.startsWith("classic-fixed") || format.startsWith("classic-rotating") || format.startsWith("classic4-fixed") || format.startsWith("classic4-rotating");
 }
 
 function isBalancedFormat(format: string): boolean {
