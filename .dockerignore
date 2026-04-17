@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+.git
+.gitignore
+.replit
+replit.md
+.local
+attached_assets
+**/*.log
+**/dist
+.env
+.env.*
+*.md
