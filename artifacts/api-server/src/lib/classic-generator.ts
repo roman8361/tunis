@@ -103,6 +103,13 @@ export function calculateClassicStats(
       const pairB = round.pairs[game.pairBKey];
 
       const diff = Math.abs(game.scoreA - game.scoreB);
+      if (game.winner === null) {
+        for (const pid of [...pairA, ...pairB]) {
+          const s = stats.get(pid);
+          if (s) { s.gamesPlayed += 1; }
+        }
+        continue;
+      }
       const winnerPair = game.winner === "A" ? pairA : pairB;
       const loserPair = game.winner === "A" ? pairB : pairA;
 

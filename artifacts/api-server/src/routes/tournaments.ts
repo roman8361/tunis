@@ -10,6 +10,18 @@ import type { PlayerRecord, RoundRecord, ClassicRoundRecord } from "@workspace/d
 
 const router: IRouter = Router();
 
+function isClassicFormat(format: string | undefined): boolean {
+  return format === "classic-fixed" || format === "classic-rotating" || format?.startsWith("classic4-fixed") === true || format?.startsWith("classic4-rotating") === true;
+}
+
+function isClassic4Format(format: string | undefined): boolean {
+  return format?.startsWith("classic4-fixed") === true || format?.startsWith("classic4-rotating") === true;
+}
+
+function isRotatingFormat(format: string | undefined): boolean {
+  return format === "classic-rotating" || format?.startsWith("classic4-rotating") === true;
+}
+
 function toSummary(t: typeof tournamentsTable.$inferSelect) {
   const players = t.players as PlayerRecord[];
   const rounds = t.rounds as (RoundRecord | ClassicRoundRecord)[];
@@ -58,8 +70,8 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
   }
 
   const { targetScore, playerNames, format } = parsed.data;
-  const isClassic = format === "classic-fixed" || format === "classic-rotating" || format === "classic4-fixed" || format === "classic4-rotating";
-  const isClassic4 = format === "classic4-fixed" || format === "classic4-rotating";
+  const isClassic = isClassicFormat(format);
+  const isClassic4 = isClassic4Format(format);
 
   if (!playerNames) {
     res.status(400).json({ error: "Необходимо указать имена игроков" });
@@ -101,7 +113,7 @@ router.post("/tournaments", requireAuth, async (req, res): Promise<void> => {
   }));
 
   const rounds = isClassic
-    ? generateClassicRounds(players, format === "classic-rotating" || format === "classic4-rotating")
+    ? generateClassicRounds(players, isRotatingFormat(format))
     : generateRounds(players);
 
   const id = randomUUID();

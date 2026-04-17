@@ -41,7 +41,8 @@ export default function TournamentResultsClassicPage() {
 
   const players = (tournament?.players ?? []) as Player[];
   const rounds = (tournament?.rounds ?? []) as ClassicRound[];
-  const isRotating = tournament?.format === "classic-rotating" || tournament?.format === "classic4-rotating";
+  const isRotating = tournament?.format === "classic-rotating" || tournament?.format?.startsWith("classic4-rotating");
+  const isBalanced = tournament?.format?.endsWith("-balanced") ?? false;
   const newTournamentPath = players.length === 4 ? "/tournaments/new?mode=classic4" : "/tournaments/new?mode=classic";
 
   const sortedPlayers = [...players].sort(
@@ -85,6 +86,7 @@ export default function TournamentResultsClassicPage() {
             <h1 className="font-bold text-slate-700">Итоги турнира</h1>
             <p className="text-xs text-slate-400">
               Классический · {isRotating ? "смена напарников" : "фиксированные пары"} · до {tournament?.targetScore} очков
+              {isBalanced ? " · с балансом" : ""}
             </p>
           </div>
         </div>
@@ -155,6 +157,7 @@ export default function TournamentResultsClassicPage() {
                 <div className="space-y-1">
                   {round.games.map((g) => {
                     if (!g.completed) return null;
+                    const isDraw = g.winner === null;
                     const winnerPairName = g.winner === "A" ? `Пара ${g.pairAKey}` : `Пара ${g.pairBKey}`;
                     const loserPairName = g.winner === "A" ? `Пара ${g.pairBKey}` : `Пара ${g.pairAKey}`;
                     const winScore = g.winner === "A" ? g.scoreA : g.scoreB;
@@ -162,9 +165,19 @@ export default function TournamentResultsClassicPage() {
                     return (
                       <div key={g.gameNumber} className="flex items-center gap-2 text-sm bg-slate-50 rounded-lg px-3 py-1.5">
                         <span className="text-slate-400 text-xs">И{g.gameNumber}</span>
-                        <span className="font-medium text-slate-700">{winnerPairName}</span>
-                        <span className="text-green-600 font-bold">{winScore}:{loseScore}</span>
-                        <span className="text-slate-400">vs {loserPairName}</span>
+                        {isDraw ? (
+                          <>
+                            <span className="font-medium text-slate-700">Ничья</span>
+                            <span className="text-slate-600 font-bold">{g.scoreA}:{g.scoreB}</span>
+                            <span className="text-slate-400">Пара {g.pairAKey} vs Пара {g.pairBKey}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="font-medium text-slate-700">{winnerPairName}</span>
+                            <span className="text-green-600 font-bold">{winScore}:{loseScore}</span>
+                            <span className="text-slate-400">vs {loserPairName}</span>
+                          </>
+                        )}
                         {g.judgeKey && <span className="text-slate-400 text-xs ml-auto">судит {g.judgeKey}</span>}
                       </div>
                     );

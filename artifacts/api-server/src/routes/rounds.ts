@@ -10,6 +10,14 @@ import { recordTournamentResultLog } from "../lib/activity-log.js";
 
 const router: IRouter = Router();
 
+function isClassicFormat(format: string): boolean {
+  return format === "classic-fixed" || format === "classic-rotating" || format.startsWith("classic4-fixed") || format.startsWith("classic4-rotating");
+}
+
+function isBalancedFormat(format: string): boolean {
+  return format.endsWith("-balanced");
+}
+
 function toFull(t: typeof tournamentsTable.$inferSelect) {
   return {
     id: t.id,
@@ -55,7 +63,8 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     return;
   }
 
-  const isClassic = tournament.format === "classic-fixed" || tournament.format === "classic-rotating" || tournament.format === "classic4-fixed" || tournament.format === "classic4-rotating";
+  const isClassic = isClassicFormat(tournament.format);
+  const isBalanced = isBalancedFormat(tournament.format);
 
   if (isClassic) {
     // Classic format: update individual game score within a round
@@ -86,31 +95,38 @@ router.patch("/tournaments/:id/rounds/:roundNumber", requireAuth, async (req, re
     if (body.data.scoreA != null && body.data.scoreB != null) {
       const scoreA = body.data.scoreA;
       const scoreB = body.data.scoreB;
-      const targetScore = tournament.targetScore;
-
       if (scoreA < 0 || scoreB < 0) {
         res.status(400).json({ error: "Счёт не может быть отрицательным" });
         return;
       }
-      if (scoreA === scoreB) {
-        res.status(400).json({ error: "Ничья недопустима" });
-        return;
-      }
 
-      const winScore = Math.max(scoreA, scoreB);
-      const loseScore = Math.min(scoreA, scoreB);
-      if (winScore !== targetScore) {
-        res.status(400).json({ error: `Победитель должен набрать ровно ${targetScore} очков` });
-        return;
-      }
-      if (loseScore >= targetScore) {
-        res.status(400).json({ error: `Проигравший должен набрать меньше ${targetScore} очков` });
-        return;
+      if (isBalanced) {
+        if (scoreA > 100 || scoreB > 100) {
+          res.status(400).json({ error: "Счёт должен быть числом от 0 до 100" });
+          return;
+        }
+      } else {
+        const targetScore = tournament.targetScore;
+        if (scoreA === scoreB) {
+          res.status(400).json({ error: "Ничья недопустима" });
+          return;
+        }
+
+        const winScore = Math.max(scoreA, scoreB);
+        const loseScore = Math.min(scoreA, scoreB);
+        if (winScore !== targetScore) {
+          res.status(400).json({ error: `Победитель должен набрать ровно ${targetScore} очков` });
+          return;
+        }
+        if (loseScore >= targetScore) {
+          res.status(400).json({ error: `Проигравший должен набрать меньше ${targetScore} очков` });
+          return;
+        }
       }
 
       game.scoreA = scoreA;
       game.scoreB = scoreB;
-      game.winner = scoreA > scoreB ? "A" : "B";
+      game.winner = scoreA === scoreB ? null : scoreA > scoreB ? "A" : "B";
       game.completed = true;
     } else if (body.data.scoreA === null && body.data.scoreB === null) {
       game.scoreA = null;

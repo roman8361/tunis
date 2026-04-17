@@ -48,6 +48,7 @@ export default function NewTournamentPage() {
   const [errors, setErrors] = useState<string[]>(Array(playerCount).fill(""));
   const [globalError, setGlobalError] = useState("");
   const [newPartnerEachRound, setNewPartnerEachRound] = useState(false);
+  const [withBalance, setWithBalance] = useState(false);
 
   useEffect(() => {
     setPlayerNames(Array(playerCount).fill(""));
@@ -104,9 +105,10 @@ export default function NewTournamentPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
+    const balanceSuffix = isClassic4 && withBalance ? "-balanced" : "";
     const format = isClassic
       ? isClassic4
-        ? newPartnerEachRound ? "classic4-rotating" : "classic4-fixed"
+        ? newPartnerEachRound ? `classic4-rotating${balanceSuffix}` : `classic4-fixed${balanceSuffix}`
         : newPartnerEachRound ? "classic-rotating" : "classic-fixed"
       : "tunisian";
     createMutation.mutate({
@@ -197,24 +199,47 @@ export default function NewTournamentPage() {
 
             {/* Classic mode extra option */}
             {isClassic && (
-              <label className="flex items-center gap-3 mt-5 cursor-pointer select-none">
-                <div
-                  onClick={() => setNewPartnerEachRound((v) => !v)}
-                  className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
-                    newPartnerEachRound
-                      ? "border-transparent"
-                      : "border-sky-300 bg-white"
-                  }`}
-                  style={newPartnerEachRound ? { background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" } : {}}
-                >
-                  {newPartnerEachRound && (
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.5">
-                      <path d="M2 6l3 3 5-5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  )}
-                </div>
-                <span className="text-slate-600 text-sm font-medium">со сменой напарника каждый тур</span>
-              </label>
+              <div className="mt-5 space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                  <div
+                    onClick={() => setNewPartnerEachRound((v) => !v)}
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+                      newPartnerEachRound
+                        ? "border-transparent"
+                        : "border-sky-300 bg-white"
+                    }`}
+                    style={newPartnerEachRound ? { background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" } : {}}
+                  >
+                    {newPartnerEachRound && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.5">
+                        <path d="M2 6l3 3 5-5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-slate-600 text-sm font-medium">со сменой напарника каждый тур</span>
+                </label>
+
+                {isClassic4 && (
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div
+                      onClick={() => setWithBalance((v) => !v)}
+                      className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+                        withBalance
+                          ? "border-transparent"
+                          : "border-sky-300 bg-white"
+                      }`}
+                      style={withBalance ? { background: "linear-gradient(135deg, #4BBCD4, #3aa8be)" } : {}}
+                    >
+                      {withBalance && (
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="2.5">
+                          <path d="M2 6l3 3 5-5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </div>
+                    <span className="text-slate-600 text-sm font-medium">с балансом</span>
+                  </label>
+                )}
+              </div>
             )}
           </div>
 

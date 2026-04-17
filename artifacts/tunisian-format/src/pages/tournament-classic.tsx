@@ -84,7 +84,8 @@ export default function TournamentClassicPage() {
 
   const rounds = (tournament?.rounds ?? []) as ClassicRound[];
   const players = (tournament?.players ?? []) as Player[];
-  const isRotating = tournament?.format === "classic-rotating" || tournament?.format === "classic4-rotating";
+  const isRotating = tournament?.format === "classic-rotating" || tournament?.format?.startsWith("classic4-rotating");
+  const isBalanced = tournament?.format?.endsWith("-balanced") ?? false;
 
   useEffect(() => {
     if (rounds.length > 0) {
@@ -116,6 +117,7 @@ export default function TournamentClassicPage() {
   function handleScoreAChange(val: string) {
     setScoreA(val);
     setScoreError("");
+    if (isBalanced) return;
     const num = parseInt(val);
     const target = tournament?.targetScore;
     if (!isNaN(num) && target) {
@@ -127,6 +129,7 @@ export default function TournamentClassicPage() {
   function handleScoreBChange(val: string) {
     setScoreB(val);
     setScoreError("");
+    if (isBalanced) return;
     const num = parseInt(val);
     const target = tournament?.targetScore;
     if (!isNaN(num) && target) {
@@ -136,10 +139,14 @@ export default function TournamentClassicPage() {
   }
 
   function handleSaveScore() {
-    const a = parseInt(scoreA);
-    const b = parseInt(scoreB);
-    if (isNaN(a) || isNaN(b)) {
+    if (!/^\d+$/.test(scoreA) || !/^\d+$/.test(scoreB)) {
       setScoreError("Введите счёт для обеих пар");
+      return;
+    }
+    const a = Number(scoreA);
+    const b = Number(scoreB);
+    if (isBalanced && (a > 100 || b > 100)) {
+      setScoreError("Счёт должен быть числом от 0 до 100");
       return;
     }
     setScoreError("");
@@ -212,6 +219,7 @@ export default function TournamentClassicPage() {
                 <div className="text-xs text-slate-400">
                   Классический · до {tournament.targetScore} очков ·{" "}
                   {isRotating ? "смена напарников" : "фиксированные пары"}
+                  {isBalanced ? " · с балансом" : ""}
                 </div>
               </div>
             </div>
@@ -349,6 +357,9 @@ export default function TournamentClassicPage() {
                       <input
                         type="number"
                         min="0"
+                        max={isBalanced ? 100 : undefined}
+                        step="1"
+                        inputMode="numeric"
                         value={scoreA}
                         onChange={(e) => handleScoreAChange(e.target.value)}
                         className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring"
@@ -361,6 +372,9 @@ export default function TournamentClassicPage() {
                       <input
                         type="number"
                         min="0"
+                        max={isBalanced ? 100 : undefined}
+                        step="1"
+                        inputMode="numeric"
                         value={scoreB}
                         onChange={(e) => handleScoreBChange(e.target.value)}
                         className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-foreground text-lg font-bold text-center focus:outline-none focus:ring-2 focus:ring-ring"
