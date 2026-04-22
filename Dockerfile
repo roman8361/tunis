@@ -1,7 +1,7 @@
 # ==============================================================
 # Stage 1: builder — install all deps and build everything
 # ==============================================================
-FROM node:24-alpine AS builder
+FROM node:24-bookworm-slim AS builder
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -44,7 +44,7 @@ CMD ["pnpm", "--filter", "@workspace/db", "run", "push"]
 # ==============================================================
 # Stage 3: api — production Node.js API server
 # ==============================================================
-FROM node:24-alpine AS api
+FROM node:24-bookworm-slim AS api
 
 WORKDIR /app
 
