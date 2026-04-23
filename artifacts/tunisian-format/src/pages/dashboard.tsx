@@ -77,6 +77,23 @@ export default function DashboardPage() {
         </div>
       </header>
 
+      {/* Notice marquee */}
+      <div className="bg-amber-100 border-b border-amber-200 overflow-hidden py-2">
+        <div className="marquee-track text-amber-900 text-sm font-medium">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <span key={i} className="px-8 inline-flex items-center gap-2 shrink-0">
+              Сервис работает по данному адресу до 11.05.2026 — переходите на постоянный адрес{" "}
+              <a
+                href="http://tunisvolley.ru/"
+                className="underline font-semibold text-orange-700 hover:text-orange-800"
+              >
+                http://tunisvolley.ru/
+              </a>
+            </span>
+          ))}
+        </div>
+      </div>
+
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Action buttons */}
         <div className="space-y-3 mb-8 animate-slide-up">
